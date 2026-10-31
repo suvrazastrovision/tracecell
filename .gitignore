@@ -9,3 +9,11 @@ warehouse/dbt/target*/
 warehouse/dbt/logs/
 warehouse/dbt/dbt_packages/
 warehouse/dbt/.user.yml
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json

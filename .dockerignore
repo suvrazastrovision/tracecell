@@ -11,3 +11,11 @@ tests
 docs
 knowledge
 warehouse
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
