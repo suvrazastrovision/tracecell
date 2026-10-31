@@ -1,0 +1,13 @@
+.git
+.venv
+.env
+.env.*
+**/__pycache__
+**/*.py[cod]
+.pytest_cache
+data
+artifacts
+tests
+docs
+knowledge
+warehouse
