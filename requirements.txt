@@ -7,3 +7,4 @@ pyarrow
 pyyaml
 python-dotenv
 pytest
+google-cloud-storage>=3.0,<4.0
