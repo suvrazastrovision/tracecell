@@ -19,3 +19,5 @@ warehouse
 *.tfplan
 *.tfvars
 *.tfvars.json
+
+infra
