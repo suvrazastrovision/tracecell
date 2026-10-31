@@ -1,0 +1,22 @@
+version: 2
+sources:
+  - name: pbmc_raw
+    database: "{{ target.database }}"
+    schema: "{{ env_var('PBMC_RAW_DATASET', 'pbmc_raw') }}"
+    description: Immutable Parquet snapshots for one verified QC release.
+    tables:
+      - name: cells
+        identifier: "cells_r_{{ env_var('PBMC_RELEASE_ID') }}"
+        columns:
+          - name: cell_id
+            data_tests: [not_null, unique]
+      - name: genes
+        identifier: "genes_r_{{ env_var('PBMC_RELEASE_ID') }}"
+        columns:
+          - name: gene_id
+            data_tests: [not_null, unique]
+      - name: dataset_summary
+        identifier: "dataset_summary_r_{{ env_var('PBMC_RELEASE_ID') }}"
+        columns:
+          - name: dataset_id
+            data_tests: [not_null, unique]

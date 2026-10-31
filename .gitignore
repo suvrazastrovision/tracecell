@@ -1,2 +1,11 @@
 .env
 .venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+data/
+artifacts/
+warehouse/dbt/target*/
+warehouse/dbt/logs/
+warehouse/dbt/dbt_packages/
+warehouse/dbt/.user.yml

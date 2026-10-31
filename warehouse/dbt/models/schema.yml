@@ -1,0 +1,52 @@
+version: 2
+models:
+  - name: stg_cells
+    description: All input cells with QC flags; excluded cells remain visible.
+    columns:
+      - name: release_id
+        data_tests: [not_null]
+      - name: cell_id
+        data_tests: [not_null, unique]
+      - name: barcode
+        data_tests: [not_null]
+      - name: total_counts
+        data_tests: [not_null]
+      - name: n_genes_by_counts
+        data_tests: [not_null]
+      - name: qc_pass
+        data_tests: [not_null]
+      - name: exclusion_reasons
+        data_tests: [not_null]
+  - name: stg_genes
+    description: Original Ensembl gene IDs and source feature labels.
+    columns:
+      - name: gene_id
+        data_tests: [not_null, unique]
+      - name: source_feature_name
+        data_tests: [not_null]
+  - name: stg_dataset_summary
+    description: Summary published by the QC producer for reconciliation.
+  - name: mart_dataset_qc
+    description: Independently aggregated cell and feature metrics for the selected release.
+    columns:
+      - name: release_id
+        data_tests: [not_null, unique]
+      - name: features_total
+        data_tests: [not_null]
+      - name: qc_pass_fraction
+        data_tests: [not_null]
+  - name: mart_qc_exclusions
+    description: Counts per exclusion reason; a cell may appear in multiple reasons.
+    columns:
+      - name: exclusion_reason
+        data_tests:
+          - not_null
+          - unique
+          - accepted_values:
+              arguments:
+                values: [zero_counts, low_genes, high_genes, high_mito]
+  - name: mart_cohort_cells
+    description: Cells passing the recorded QC policy, available for cohort selection.
+    columns:
+      - name: cell_id
+        data_tests: [not_null, unique]

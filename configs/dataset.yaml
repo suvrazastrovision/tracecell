@@ -1,0 +1,16 @@
+schema_version: 1
+dataset_id: 10x_pbmc3k
+dataset_version: cellranger-1.1.0-hg19-scanpy-v1
+source_url: https://falexwolf.de/data/pbmc3k_raw.h5ad
+source_filename: pbmc3k_raw.h5ad
+sha256: 89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1
+expected_cells: 2700
+expected_features: 32738
+organism: Homo sapiens
+tissue: blood
+donor_count: 1
+reference_genome: hg19
+count_layer: X
+license: CC-BY-4.0
+attribution: 10x Genomics
+original_source: https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0

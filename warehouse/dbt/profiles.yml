@@ -1,0 +1,19 @@
+pbmc_analytics:
+  target: bigquery
+  outputs:
+    bigquery:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GOOGLE_CLOUD_PROJECT', 'unconfigured-project') }}"
+      dataset: "{{ env_var('PBMC_ANALYTICS_DATASET', 'pbmc_analytics') }}_r_{{ env_var('PBMC_RELEASE_ID') }}"
+      location: "{{ env_var('PBMC_BQ_LOCATION', 'europe-west1') }}"
+      threads: 2
+      priority: interactive
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      maximum_bytes_billed: 100000000
+    local:
+      type: duckdb
+      path: "{{ env_var('PBMC_DUCKDB_PATH', 'artifacts/pbmc.duckdb') }}"
+      schema: "{{ env_var('PBMC_ANALYTICS_DATASET', 'pbmc_analytics') }}_r_{{ env_var('PBMC_RELEASE_ID') }}"
+      threads: 2

@@ -1,0 +1,7 @@
+schema_version: 1
+policy_id: pbmc-demo
+policy_version: '1'
+min_genes_inclusive: 200
+max_genes_exclusive: 2500
+max_mito_pct_exclusive: 5.0
+mitochondrial_prefix: MT-

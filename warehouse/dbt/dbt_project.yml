@@ -1,0 +1,17 @@
+name: pbmc_analytics
+version: '1.0.0'
+config-version: 2
+profile: pbmc_analytics
+require-dbt-version: ['>=1.12.0', '<1.13.0']
+flags:
+  send_anonymous_usage_stats: false
+model-paths: [models]
+test-paths: [tests]
+macro-paths: [macros]
+clean-targets: [target, dbt_packages]
+models:
+  pbmc_analytics:
+    staging:
+      +materialized: view
+    marts:
+      +materialized: table
