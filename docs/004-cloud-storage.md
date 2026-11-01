@@ -2,7 +2,7 @@
 
 The uploader publishes an existing, validated local release to the private
 pipeline data bucket. It uses Application Default Credentials on a developer
-machine. A future Cloud Run wrapper will use its runtime service account.
+machine. The Cloud Run wrapper uses its attached runtime service account.
 Do not copy credential files into the container image.
 
 ## Validate before uploading
@@ -124,6 +124,68 @@ replacing other bucket members. No service account key is created; the Cloud
 Run job will use its attached service account through ADC.
 
 Reference: [Cloud Storage IAM roles](https://docs.cloud.google.com/storage/docs/access-control/iam-roles).
+
+## Cloud Run Job
+
+`infra/cloud_run.tf` enables the Cloud Run API and defines the `pbmc-qc` job in
+`europe-west1`. Its image is pinned to the uploaded v0.2.0 digest:
+
+```text
+sha256:f5eea9f5f0e0ac564c0ecedcb9e562288eec5507690828570fc065264302ae93
+```
+
+The job overrides the image's local-QC entry point to run
+`python -m pbmc_platform.run_cloud_qc` with the project and pipeline bucket.
+It uses the dedicated runtime service account, one task, one vCPU, 2 GiB of
+memory, a 900-second per-attempt timeout and at most one retry. Parallelism
+is one within an execution; independent executions can still overlap.
+Application create-only preconditions protect shared published objects.
+
+Applying this configuration creates the job definition without executing it.
+There is no schedule. After applying the reviewed Terraform plan, execute it
+manually:
+
+```powershell
+gcloud.cmd run jobs execute pbmc-qc `
+  --project=pbmc-okf-portfolio `
+  --region=europe-west1 `
+  --wait
+```
+
+Confirm the platform execution succeeds and inspect its structured logs and
+`runs/cloud_qc/` audit record. A first Linux execution can create a different
+release from the existing Windows run. A later execution using the same
+image/configuration should report `qc_reused: true`,
+`restored_from_cloud: true` and `publication.reused: true`. Each attempt uses a
+new temporary work directory. Job success does not run the warehouse/dbt
+stages; those are separate steps. Deletion protection is disabled for this
+portfolio job so it can be removed after use; the data buckets remain
+protected by their Terraform lifecycle settings.
+
+Reference: [Create Cloud Run jobs](https://docs.cloud.google.com/run/docs/create-jobs).
+
+## Live Cloud Run verification
+
+Verified on 2026-11-01 (Europe/Berlin) in `pbmc-okf-portfolio`, `europe-west1`:
+
+| Execution | Result | Release reused |
+| --- | --- | --- |
+| `pbmc-qc-sdnj7` | Completed successfully | No; first cloud computation |
+| `pbmc-qc-n47zq` | Completed successfully | Yes; restored on a fresh worker |
+
+Both executions used Linux release
+`71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d`.
+The source and all five published files were downloaded at their recorded GCS
+generations and their SHA-256 checksums verified. Release identity, Parquet
+keys and QC summary reconciliation passed. Both durable cloud audits matched
+their structured Cloud Logging records. The replay preserved every published
+object generation and reported QC, restoration and publication reuse.
+
+Measured totals: 2,700 cells, 32,738 features, 2,638 QC passes, 62 failures,
+and 6,390,631 counts preserved. Both executions completed without a task retry.
+The local evidence report is `artifacts/cloud_run_verification.json`; artifacts
+are excluded from Git. Workflow orchestration is documented in
+[005-workflow-orchestration.md](005-workflow-orchestration.md).
 
 ## Verification
 
