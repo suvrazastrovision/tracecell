@@ -106,7 +106,8 @@ def compare_rows(name, actual, expected):
         raise ValueError(f"Remote rows differ from local {name}") from error
 
 
-def load_bigquery(plan, project, raw_dataset="pbmc_raw", location="europe-west1", client=None):
+def load_bigquery(plan, project, raw_dataset="pbmc_raw", location="europe-west1", client=None,
+                  create_dataset=True):
     from google.cloud import bigquery
 
     validate_identifier(project, "project")
@@ -116,7 +117,10 @@ def load_bigquery(plan, project, raw_dataset="pbmc_raw", location="europe-west1"
     client = client or bigquery.Client(project=project, location=location)
     dataset = bigquery.Dataset(f"{project}.{raw_dataset}")
     dataset.location = location
-    existing_dataset = client.create_dataset(dataset, exists_ok=True)
+    if create_dataset:
+        existing_dataset = client.create_dataset(dataset, exists_ok=True)
+    else:
+        existing_dataset = client.get_dataset(dataset.reference)
     if existing_dataset.location.lower() != location.lower():
         raise ValueError("Existing raw dataset is in a different location")
 
@@ -193,7 +197,7 @@ def load_local(plan, database_path="artifacts/pbmc.duckdb", raw_dataset="pbmc_ra
 
 def run_load(target="bigquery", project=None, processed_dir="data/processed", release_id=None,
              raw_dataset="pbmc_raw", location="europe-west1", database_path="artifacts/pbmc.duckdb",
-             artifact_dir="artifacts", dry_run=False, client=None):
+             artifact_dir="artifacts", dry_run=False, client=None, require_existing_dataset=False):
     audit = {
         "run_id": uuid.uuid4().hex, "target": target,
         "started_at": datetime.now(timezone.utc).isoformat(), "status": "running",
@@ -210,7 +214,8 @@ def run_load(target="bigquery", project=None, processed_dir="data/processed", re
         if target == "bigquery":
             if not project:
                 raise ValueError("Set GOOGLE_CLOUD_PROJECT or pass --project before loading BigQuery")
-            results = load_bigquery(plan, project, raw_dataset, location, client)
+            results = load_bigquery(plan, project, raw_dataset, location, client,
+                                    create_dataset=not require_existing_dataset)
         else:
             results = load_local(plan, database_path, raw_dataset)
         audit.update(status="success", tables=results, project=project, location=location)
@@ -236,12 +241,15 @@ def main():
     parser.add_argument("--database-path", default=os.environ.get("PBMC_DUCKDB_PATH", "artifacts/pbmc.duckdb"))
     parser.add_argument("--artifact-dir", default="artifacts")
     parser.add_argument("--dry-run", action="store_true", help="Validate local files and print the plan without cloud calls")
+    parser.add_argument("--require-existing-dataset", action="store_true",
+                        help="Read an existing dataset; do not attempt dataset creation")
     args = parser.parse_args()
     try:
         result = run_load(
             target=args.target, project=args.project, processed_dir=args.processed_dir,
             release_id=args.release_id, raw_dataset=args.raw_dataset, location=args.location,
             database_path=args.database_path, artifact_dir=args.artifact_dir, dry_run=args.dry_run,
+            require_existing_dataset=args.require_existing_dataset,
         )
     except Exception as error:
         parser.exit(1, f"Warehouse load failed: {error}\n")

@@ -38,9 +38,11 @@ and publication `reused` as true. The QC summary must reconcile and the object
 generations must remain unchanged. Each invocation creates a new run audit.
 
 This workflow currently orchestrates ingestion, QC, release publication and
-run audits. The BigQuery loader and dbt build still run separately; adding
-those cloud stages is the next automation milestone. OKF generation and the
-scientist assistant remain subsequent portfolio stages.
+run audits. The [standalone BigQuery cloud loader](006-cloud-warehouse.md)
+and [cloud dbt job](007-cloud-dbt.md) are also deployed and verified, but are
+not yet invoked by this workflow. The next automation milestone is an explicit
+QC-to-load-to-dbt release handoff. OKF generation and the scientist assistant
+remain subsequent portfolio stages.
 
 ## Live verification
 

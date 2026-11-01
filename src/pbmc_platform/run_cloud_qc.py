@@ -3,7 +3,6 @@
 import argparse
 import hashlib
 import json
-import re
 import sys
 import tempfile
 import uuid
@@ -11,20 +10,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from .ingestion import acquire_dataset, canonical_json, read_config, sha256_file, validate_manifest
-from .load_warehouse import prepare_load
+from .cloud_release import download_release, download_verified
 from .publish_gcs import prepare_publish, publish_object, publish_release, validate_destination
 from .qc import validate_policy
-from .run_qc import OUTPUTS, build_identity, run_pipeline, validate_release, write_json
-
-
-def download_verified(blob, destination, expected_sha256=None):
-    generation = int(blob.generation)
-    blob.download_to_filename(
-        str(destination), if_generation_match=generation, checksum="crc32c", timeout=120,
-    )
-    if expected_sha256 is not None and sha256_file(destination) != expected_sha256:
-        raise ValueError(f"Remote checksum mismatch: {blob.name}")
-    return generation
+from .run_qc import build_identity, run_pipeline, write_json
 
 
 def ensure_raw(bucket, bucket_name, manifest, raw_dir):
@@ -51,38 +40,7 @@ def ensure_raw(bucket, bucket_name, manifest, raw_dir):
 
 def restore_release(bucket, identity, processed_dir):
     release_id = hashlib.sha256(canonical_json(identity).encode()).hexdigest()
-    root = Path(processed_dir)
-    releases = root / "releases"
-    releases.mkdir(parents=True, exist_ok=True)
-    destination = releases / release_id
-    if destination.exists():
-        validate_release(destination, identity)
-        prepare_load(root, release_id)
-        return False
-    prefix = f"processed/releases/{release_id}"
-    marker = bucket.get_blob(f"{prefix}/release.json", timeout=120)
-    if marker is None:
-        return False
-    # Download into staging: invalid or incomplete cloud data never becomes a
-    # local release and is never referenced by the local current pointer.
-    with tempfile.TemporaryDirectory(prefix="restore-", dir=releases) as temp:
-        staging = Path(temp) / "releases" / release_id
-        staging.mkdir(parents=True)
-        download_verified(marker, staging / "release.json")
-        metadata = json.loads((staging / "release.json").read_text(encoding="utf-8"))
-        if metadata.get("release_id") != release_id or metadata.get("identity") != identity:
-            raise ValueError("Cloud release identity does not match this run")
-        for name in OUTPUTS:
-            checksum = metadata["outputs"][name]["sha256"]
-            if not isinstance(checksum, str) or not re.fullmatch(r"[a-f0-9]{64}", checksum):
-                raise ValueError(f"Invalid cloud release checksum: {name}")
-            blob = bucket.get_blob(f"{prefix}/{name}", timeout=120)
-            if blob is None:
-                raise ValueError(f"Committed cloud release is missing: {name}")
-            download_verified(blob, staging / name, checksum)
-        prepare_load(temp, release_id)
-        staging.rename(destination)
-    return True
+    return download_release(bucket, release_id, processed_dir, expected_identity=identity, missing_ok=True)
 
 
 def run_cloud_qc(bucket, project, manifest="configs/dataset.yaml", policy="configs/qc.yaml",

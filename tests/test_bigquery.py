@@ -17,9 +17,16 @@ class FakeBigQuery:
         self.loads = []
         self.location = "europe-west1"
         self.fail_once = None
+        self.dataset_creations = 0
+        self.dataset_reads = 0
 
     def create_dataset(self, dataset, exists_ok):
         assert exists_ok
+        self.dataset_creations += 1
+        return SimpleNamespace(location=self.location)
+
+    def get_dataset(self, reference):
+        self.dataset_reads += 1
         return SimpleNamespace(location=self.location)
 
     def create_table(self, table, exists_ok):
@@ -108,3 +115,26 @@ def test_unsafe_identifiers_are_rejected_without_service_calls(warehouse_release
     with pytest.raises(ValueError, match="Invalid project"):
         load_bigquery(plan, "bad`project", client=client)
     assert client.tables == {}
+
+
+def test_existing_dataset_mode_does_not_attempt_creation(warehouse_release):
+    plan, _ = warehouse_release
+    client = FakeBigQuery()
+    results = load_bigquery(plan, "portfolio-project", client=client, create_dataset=False)
+    assert len(results) == 3 and client.dataset_reads == 1
+    assert client.dataset_creations == 0
+
+
+def test_missing_required_dataset_does_not_trigger_creation(warehouse_release, monkeypatch):
+    from google.api_core.exceptions import NotFound
+
+    plan, _ = warehouse_release
+    client = FakeBigQuery()
+
+    def missing(reference):
+        raise NotFound("Dataset is not provisioned")
+
+    monkeypatch.setattr(client, "get_dataset", missing)
+    with pytest.raises(NotFound):
+        load_bigquery(plan, "portfolio-project", client=client, create_dataset=False)
+    assert client.dataset_creations == 0 and client.loads == []
