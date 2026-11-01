@@ -135,9 +135,9 @@ audits matched their structured logs. The final Terraform plan reported no
 changes. Local evidence is in `artifacts/cloud_warehouse_verification.json`
 (excluded from Git).
 
-This is Step 4, substep 1. The next substep is a cloud dbt job. Workflows will
-be extended to pass the exact release through QC, load and dbt after both
-downstream jobs are verified independently.
+This implements Step 4, substep 1. The verified loader is now also invoked
+by the [complete pipeline workflow](008-pipeline-handoff.md), which passes
+the release ID from the successful QC execution's receipt.
 
 References:
 

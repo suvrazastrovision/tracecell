@@ -69,6 +69,41 @@ def test_existing_local_release_is_verified_and_reused(cloud_run):
     assert not result["restored_from_cloud"]
 
 
+def test_execution_receipt_is_bound_to_release_and_retry_safe(cloud_run, monkeypatch):
+    kwargs, _ = cloud_run
+    monkeypatch.setenv("CLOUD_RUN_EXECUTION", "pbmc-qc-fixture")
+    first = cloud.run_cloud_qc(**kwargs)
+    objects = kwargs["client"].remote.objects
+    name = "runs/handoffs/qc/pbmc-qc-fixture.json"
+    receipt_bytes, generation = objects[name]
+    receipt = json.loads(receipt_bytes)
+    assert receipt["cloud_execution"] == "pbmc-qc-fixture"
+    assert receipt["release_id"] == first["release_id"]
+    assert receipt["manifest_sha256"] == first["publication"]["objects"]["release.json"]["sha256"]
+    second = cloud.run_cloud_qc(**kwargs)
+    assert second["run_id"] != first["run_id"]
+    assert objects[name] == (receipt_bytes, generation)
+
+
+@pytest.mark.parametrize("prefix", ["runs/cloud_qc/", "runs/qc/", "runs/handoffs/"])
+def test_incomplete_audit_or_receipt_delivery_fails_without_handoff(cloud_run, monkeypatch, prefix):
+    kwargs, _ = cloud_run
+    monkeypatch.setenv("CLOUD_RUN_EXECUTION", "pbmc-qc-fixture")
+    kwargs["client"].remote.fail_prefix = prefix
+    with pytest.raises(RuntimeError, match="durable audit upload failed"):
+        cloud.run_cloud_qc(**kwargs)
+    assert not any(name.startswith("runs/handoffs/") for name in kwargs["client"].remote.objects)
+
+
+def test_failed_qc_never_publishes_execution_receipt(cloud_run, monkeypatch):
+    kwargs, _ = cloud_run
+    monkeypatch.setenv("CLOUD_RUN_EXECUTION", "pbmc-qc-fixture")
+    monkeypatch.setattr(cloud, "run_pipeline", lambda *a, **k: (_ for _ in ()).throw(ValueError("QC failed")))
+    with pytest.raises(ValueError, match="QC failed"):
+        cloud.run_cloud_qc(**kwargs)
+    assert not any(name.startswith("runs/handoffs/") for name in kwargs["client"].remote.objects)
+
+
 def test_corrupted_remote_raw_fails_without_https_fallback(cloud_run, monkeypatch):
     kwargs, _ = cloud_run
     dataset = cloud.read_config(kwargs["manifest"])

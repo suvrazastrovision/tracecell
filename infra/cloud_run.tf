@@ -25,7 +25,7 @@ resource "google_cloud_run_v2_job" "qc" {
       max_retries     = 1
 
       containers {
-        image       = "europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-qc@sha256:f5eea9f5f0e0ac564c0ecedcb9e562288eec5507690828570fc065264302ae93"
+        image       = "europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-qc@sha256:61b525d54223a968d0625656abdebf2c6e50a50a55060494900b4a8a1b7dd052"
         working_dir = "/app"
         command     = ["python", "-m", "pbmc_platform.run_cloud_qc"]
         args = [

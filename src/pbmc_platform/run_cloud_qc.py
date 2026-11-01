@@ -3,6 +3,8 @@
 import argparse
 import hashlib
 import json
+import os
+import re
 import sys
 import tempfile
 import uuid
@@ -43,6 +45,26 @@ def restore_release(bucket, identity, processed_dir):
     return download_release(bucket, release_id, processed_dir, expected_identity=identity, missing_ok=True)
 
 
+def publish_handoff(remote, root, result, execution):
+    """Commit a deterministic receipt only after all processing audits are durable.
+
+    The execution name selects this receipt; no mutable latest pointer is used.
+    Content excludes per-attempt UUIDs so a successful task retry can reuse it.
+    """
+    receipt = {
+        "schema_version": 1, "status": "success", "cloud_execution": execution,
+        "release_id": result["release_id"],
+        "manifest_uri": result["publication"]["manifest_uri"],
+        "manifest_sha256": result["publication"]["objects"]["release.json"]["sha256"],
+    }
+    path = root / "artifacts" / "handoff.json"
+    write_json(path, receipt)
+    return publish_object(remote, {
+        "file": str(path), "object_name": f"runs/handoffs/qc/{execution}.json",
+        "sha256": sha256_file(path),
+    })
+
+
 def run_cloud_qc(bucket, project, manifest="configs/dataset.yaml", policy="configs/qc.yaml",
                  work_dir=None, client=None):
     if work_dir is None:
@@ -57,10 +79,13 @@ def run_cloud_qc(bucket, project, manifest="configs/dataset.yaml", policy="confi
     audit = {
         "run_id": uuid.uuid4().hex, "started_at": datetime.now(timezone.utc).isoformat(),
         "status": "running", "bucket": bucket, "project": project,
+        "cloud_execution": os.environ.get("CLOUD_RUN_EXECUTION"),
     }
     remote = None
     try:
         validate_destination(bucket, project)
+        if audit["cloud_execution"] is not None and not re.fullmatch(r"[a-z][a-z0-9-]{0,62}", audit["cloud_execution"]):
+            raise ValueError("Invalid Cloud Run execution name")
         if client is None:
             from google.cloud import storage
 
@@ -82,6 +107,7 @@ def run_cloud_qc(bucket, project, manifest="configs/dataset.yaml", policy="confi
             "qc_reused": qc["reused"], "restored_from_cloud": audit["restored_from_cloud"],
             "publication": publication,
             "audit_uri": f"gs://{bucket}/runs/cloud_qc/{audit['run_id']}.json",
+            "cloud_execution": audit["cloud_execution"],
         }
         audit.update(status="success", result=result)
         return result
@@ -110,6 +136,15 @@ def run_cloud_qc(bucket, project, manifest="configs/dataset.yaml", policy="confi
                     print(canonical_json({
                         "event": "cloud_qc_audit_upload_failed", "run_id": audit["run_id"],
                         "object_name": name, "error": failures[-1],
+                    }), file=sys.stderr, flush=True)
+            if not failures and audit["status"] == "success" and audit["cloud_execution"]:
+                try:
+                    publish_handoff(remote, root, audit["result"], audit["cloud_execution"])
+                except Exception as error:
+                    failures.append(f"{type(error).__name__}: {error}")
+                    print(canonical_json({
+                        "event": "cloud_qc_handoff_upload_failed", "run_id": audit["run_id"],
+                        "cloud_execution": audit["cloud_execution"], "error": failures[-1],
                     }), file=sys.stderr, flush=True)
         if failures and audit["status"] == "success":
             raise RuntimeError("QC release published, but durable audit upload failed: " + "; ".join(failures))

@@ -1,24 +1,26 @@
-# QC orchestration with Google Cloud Workflows
+# Pipeline orchestration with Google Cloud Workflows
 
-`infra/workflows.tf` defines `pbmc-qc-workflow` in `europe-west1`. It starts
-the existing `pbmc-qc` Cloud Run Job and waits for completion using the Cloud
-Run v1 connector. The region is supplied explicitly to avoid the global
-endpoint. The result is the completed Cloud Run execution, including its name,
-completion conditions and log URI. A failed job propagates as a failed workflow.
+`infra/workflows.tf` defines `pbmc-qc-workflow` in `europe-west1`, using
+`infra/pipeline.yaml.tftpl`. It runs QC, reads the successful execution's
+committed receipt, then runs the BigQuery loader and dbt for that exact release.
+Each Cloud Run v1 connector call waits for completion. The region is explicit.
+A failed stage stops the workflow. See the [complete release handoff](008-pipeline-handoff.md).
 
 ## Identity and execution controls
 
 The dedicated `pbmc-workflow-runner` service account receives job-scoped
-`roles/run.invoker` and `roles/run.viewer` grants. The connector can start the
-job and monitor its execution. The workflow has no bucket grants or permission
-to update the job, choose another container, or supply execution overrides.
-The job retains its separate `pbmc-qc-runner` identity for data access.
+`roles/run.invoker` and `roles/run.viewer` grants on QC. The loader and dbt
+jobs grant job-scoped `roles/run.jobsExecutorWithOverrides` and `roles/run.viewer`
+so the workflow can pass the selected release and monitor completion.
+Its only bucket grant reads `runs/handoffs/qc/` objects. It cannot update job
+definitions, change their container images, write bucket objects or access
+BigQuery directly. Each job retains its separate data-access service account.
 
-The connector timeout is 2,100 seconds, allowing the job's two possible
-900-second attempts plus startup time. There is no explicit workflow retry
-policy around starting the job. Cloud Run handles the configured single task
+Connector timeouts are 2,100 seconds for QC and loading, and 2,700 seconds for
+dbt, allowing two possible task attempts plus startup time. There is no explicit
+workflow retry policy around starting jobs. Cloud Run handles each configured single task
 retry. Workflow timeout does not itself cancel an already running Cloud Run
-execution; inspect the returned execution and platform logs after failures.
+execution; inspect execution names and platform logs after failures.
 No schedule or event trigger is configured.
 
 ## Run and inspect
@@ -31,20 +33,18 @@ gcloud.cmd workflows run pbmc-qc-workflow `
   --location=europe-west1
 ```
 
-Confirm the workflow reaches `SUCCEEDED`, then inspect the Cloud Run execution
-returned in its result. For a matching published release, the job's structured
+Confirm the workflow reaches `SUCCEEDED`, then inspect all three execution names
+returned with the release ID, analytics dataset and receipt generation. For a matching published release, QC's structured
 `cloud_qc_run` log and GCS audit should show `qc_reused`, `restored_from_cloud`
 and publication `reused` as true. The QC summary must reconcile and the object
 generations must remain unchanged. Each invocation creates a new run audit.
 
-This workflow currently orchestrates ingestion, QC, release publication and
-run audits. The [standalone BigQuery cloud loader](006-cloud-warehouse.md)
-and [cloud dbt job](007-cloud-dbt.md) are also deployed and verified, but are
-not yet invoked by this workflow. The next automation milestone is an explicit
-QC-to-load-to-dbt release handoff. OKF generation and the scientist assistant
-remain subsequent portfolio stages.
+This workflow orchestrates QC, release publication, [BigQuery loading](006-cloud-warehouse.md),
+[dbt analytics](007-cloud-dbt.md) and their run audits. The next automation
+substep is broader full-chain failure/retry and operational verification.
+OKF generation and the scientist assistant remain subsequent portfolio stages.
 
-## Live verification
+## Historical QC-only baseline verification
 
 Verified on 2026-11-01 (Europe/Berlin):
 

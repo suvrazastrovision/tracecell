@@ -113,10 +113,10 @@ Terraform formatting, validation and drift checks passed with no changes.
 The local generated evidence report is `artifacts/cloud_dbt_verification.json`;
 it is excluded from Git.
 
-The current Workflows definition still invokes QC only. The warehouse loader
-and dbt job are standalone. The next substep is to connect
-QC -> warehouse load -> dbt with an explicit, verified release handoff.
-OKF generation and the scientist assistant follow later.
+The dbt job is now also invoked by the [complete pipeline workflow](008-pipeline-handoff.md)
+after QC and warehouse loading, using the QC execution's exact release ID.
+Broader full-chain failure/retry verification, OKF generation and the scientist
+assistant follow later.
 
 ## References
 

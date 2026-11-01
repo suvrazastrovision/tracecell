@@ -1,0 +1,91 @@
+main:
+  steps:
+    - run_qc:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: namespaces/${project}/jobs/${qc_job}
+          location: ${location}
+          body: {}
+          connector_params:
+            timeout: 2100
+        result: qc_execution
+    - receipt_name:
+        assign:
+          - handoff_object: $${"runs/handoffs/qc/" + qc_execution.metadata.name + ".json"}
+    - receipt_metadata:
+        call: googleapis.storage.v1.objects.get
+        args:
+          bucket: ${bucket}
+          object: $${text.url_encode(handoff_object)}
+        result: receipt_metadata
+    - read_receipt:
+        call: http.get
+        args:
+          url: $${"https://storage.googleapis.com/storage/v1/b/${bucket}/o/" + text.url_encode(handoff_object)}
+          auth:
+            type: OAuth2
+          query:
+            alt: media
+            generation: $${receipt_metadata.generation}
+            ifGenerationMatch: $${receipt_metadata.generation}
+        result: receipt_response
+    - receipt_body:
+        assign:
+          - receipt: $${receipt_response.body}
+    - require_json:
+        switch:
+          - condition: $${get_type(receipt) != "map"}
+            steps:
+              - invalid_json:
+                  raise: "QC handoff receipt must be a JSON object"
+    - validate_handoff:
+        switch:
+          - condition: $${map.get(receipt, "schema_version") != 1 or map.get(receipt, "status") != "success" or map.get(receipt, "cloud_execution") != qc_execution.metadata.name}
+            steps:
+              - invalid_execution:
+                  raise: "QC handoff receipt does not identify this successful execution"
+          - condition: $${map.get(receipt, "release_id") != "${release_id}"}
+            steps:
+              - unprovisioned_release:
+                  raise: "QC release has no provisioned analytics dataset; stop before warehouse loading"
+          - condition: $${map.get(receipt, "manifest_uri") != "gs://${bucket}/processed/releases/${release_id}/release.json"}
+            steps:
+              - invalid_manifest:
+                  raise: "QC handoff manifest URI does not match the selected release"
+    - selected_release:
+        assign:
+          - release_id: $${receipt.release_id}
+    - run_warehouse:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: namespaces/${project}/jobs/${warehouse_job}
+          location: ${location}
+          body:
+            overrides:
+              containerOverrides:
+                - args: ["--project", "${project}", "--bucket", "${bucket}", "--release-id", "$${release_id}", "--raw-dataset", "${raw_dataset}", "--location", "${location}"]
+          connector_params:
+            timeout: 2100
+        result: warehouse_execution
+    - run_dbt:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: namespaces/${project}/jobs/${dbt_job}
+          location: ${location}
+          body:
+            overrides:
+              containerOverrides:
+                - args: ["--project", "${project}", "--bucket", "${bucket}", "--release-id", "$${release_id}", "--raw-dataset", "${raw_dataset}", "--location", "${location}"]
+          connector_params:
+            timeout: 2700
+        result: dbt_execution
+    - completed:
+        return:
+          status: success
+          release_id: $${release_id}
+          analytics_dataset: ${analytics}
+          qc_execution: $${qc_execution.metadata.name}
+          warehouse_execution: $${warehouse_execution.metadata.name}
+          dbt_execution: $${dbt_execution.metadata.name}
+          handoff_uri: $${"gs://${bucket}/" + handoff_object}
+          handoff_generation: $${receipt_metadata.generation}
