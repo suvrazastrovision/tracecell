@@ -40,8 +40,9 @@ and publication `reused` as true. The QC summary must reconcile and the object
 generations must remain unchanged. Each invocation creates a new run audit.
 
 This workflow orchestrates QC, release publication, [BigQuery loading](006-cloud-warehouse.md),
-[dbt analytics](007-cloud-dbt.md) and their run audits. The next automation
-substep is broader full-chain failure/retry and operational verification.
+[dbt analytics](007-cloud-dbt.md) and their run audits. The
+[failure/retry drills and recovery runbook](009-pipeline-operations.md) complete
+the four Stage 4 automation substeps.
 OKF generation and the scientist assistant remain subsequent portfolio stages.
 
 ## Historical QC-only baseline verification

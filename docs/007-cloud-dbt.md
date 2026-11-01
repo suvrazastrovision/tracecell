@@ -115,8 +115,8 @@ it is excluded from Git.
 
 The dbt job is now also invoked by the [complete pipeline workflow](008-pipeline-handoff.md)
 after QC and warehouse loading, using the QC execution's exact release ID.
-Broader full-chain failure/retry verification, OKF generation and the scientist
-assistant follow later.
+[Full-chain failure/retry drills and recovery](009-pipeline-operations.md) are
+verified. OKF generation and the scientist assistant follow later.
 
 ## References
 

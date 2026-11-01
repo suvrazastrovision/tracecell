@@ -62,7 +62,8 @@ timeout does not itself cancel a running Cloud Run task. Failed dbt builds may
 leave partial analytics; rerun after diagnosis, and accept results only after
 terminal success and passing tests. Run one chain at a time for this release
 because its dbt models are rebuilt in place. No scheduler or automatic trigger
-is configured. Broader failure drills and operational controls are substep 4.
+is configured. The [failure/retry drills and recovery runbook](009-pipeline-operations.md)
+complete substep 4. Later operations work includes alerts, schedules and concurrency controls.
 
 The workflow name remains `pbmc-qc-workflow`; its result is now a summary with
 `status`, `release_id`, `analytics_dataset`, `qc_execution`, `warehouse_execution`,

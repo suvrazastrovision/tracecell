@@ -1,0 +1,3 @@
+ARG WORKER_IMAGE
+FROM ${WORKER_IMAGE}
+COPY --chown=app:app ops/drill_worker.py /app/ops/drill_worker.py
