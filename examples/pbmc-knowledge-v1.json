@@ -1,0 +1,122 @@
+{
+  "format_name": "pbmc-project-knowledge",
+  "schema_version": "1.0.0",
+  "package_status": "illustrative",
+  "identity": {
+    "dataset_id": "10x_pbmc3k",
+    "dataset_version": "cellranger-1.1.0-hg19-scanpy-v1",
+    "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d"
+  },
+  "dataset": {
+    "organism": "Homo sapiens",
+    "tissue": "blood",
+    "donor_count": 1,
+    "reference_genome": "hg19",
+    "source_url": "https://falexwolf.de/data/pbmc3k_raw.h5ad",
+    "original_source_url": "https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0",
+    "source_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "license": "CC-BY-4.0",
+    "attribution": "10x Genomics",
+    "evidence_refs": [
+      "dataset_config",
+      "release"
+    ]
+  },
+  "qc_policy": {
+    "policy_id": "pbmc-demo",
+    "policy_version": "1",
+    "min_genes_inclusive": 200,
+    "max_genes_exclusive": 2500,
+    "max_mito_pct_exclusive": 5,
+    "mitochondrial_prefix": "MT-",
+    "evidence_refs": [
+      "qc_policy",
+      "release"
+    ]
+  },
+  "results": {
+    "metrics": {
+      "cells_total": 2700,
+      "cells_pass": 2638,
+      "cells_fail": 62,
+      "features_total": 32738,
+      "total_counts": 6390631,
+      "mitochondrial_features": 13,
+      "qc_pass_fraction": 0.977037037037037
+    },
+    "evidence_refs": [
+      "dataset_qc",
+      "release"
+    ],
+    "exclusions": {
+      "counts": {
+        "zero_counts": 0,
+        "low_genes": 0,
+        "high_genes": 5,
+        "high_mito": 57
+      },
+      "reasons_may_overlap": true,
+      "evidence_refs": [
+        "qc_exclusions",
+        "release"
+      ]
+    }
+  },
+  "dbt": {
+    "invocation_id": "illustrative-invocation-not-a-real-run",
+    "status": "success",
+    "models_succeeded": 6,
+    "tests_passed": 30,
+    "evidence_refs": [
+      "dbt_audit",
+      "dbt_manifest",
+      "dbt_results"
+    ]
+  },
+  "evidence": {
+    "release": {
+      "kind": "release_manifest",
+      "uri": "gs://pbmc-example-data/processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/release.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "dataset_config": {
+      "kind": "dataset_config",
+      "uri": "gs://pbmc-example-data/example-inputs/dataset.yaml",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "qc_policy": {
+      "kind": "qc_policy",
+      "uri": "gs://pbmc-example-data/example-inputs/qc.yaml",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "dbt_audit": {
+      "kind": "dbt_audit",
+      "uri": "gs://pbmc-example-data/runs/cloud_dbt/example-run.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "dbt_manifest": {
+      "kind": "dbt_manifest",
+      "uri": "gs://pbmc-example-data/runs/dbt/example-run/manifest.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "dbt_results": {
+      "kind": "dbt_run_results",
+      "uri": "gs://pbmc-example-data/runs/dbt/example-run/run_results.json",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "dataset_qc": {
+      "kind": "bigquery_table",
+      "table_id": "pbmc-example.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_dataset_qc"
+    },
+    "qc_exclusions": {
+      "kind": "bigquery_table",
+      "table_id": "pbmc-example.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_qc_exclusions"
+    }
+  },
+  "limitations": [
+    "This is an illustrative contract example. Evidence URIs and zero-filled artifact hashes are placeholders, not verified cloud evidence.",
+    "The dataset contains one healthy donor and does not support disease comparisons.",
+    "This pipeline does not infer cell types.",
+    "QC exclusion reasons can overlap; their counts must not be assumed to sum to cells_fail."
+  ]
+}

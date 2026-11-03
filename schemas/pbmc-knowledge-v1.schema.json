@@ -1,0 +1,387 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PBMC project knowledge package v1",
+  "description": "Project-defined format, not conformance to an external OKF standard. Structural validation must be followed by the semantic checks in docs/010-knowledge-contract.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format_name",
+    "schema_version",
+    "package_status",
+    "identity",
+    "dataset",
+    "qc_policy",
+    "results",
+    "dbt",
+    "evidence",
+    "limitations"
+  ],
+  "properties": {
+    "format_name": {
+      "const": "pbmc-project-knowledge"
+    },
+    "schema_version": {
+      "const": "1.0.0"
+    },
+    "package_status": {
+      "enum": [
+        "illustrative",
+        "draft",
+        "verified"
+      ]
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "dataset_id",
+        "dataset_version",
+        "release_id"
+      ],
+      "properties": {
+        "dataset_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dataset_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "release_id": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "organism",
+        "tissue",
+        "donor_count",
+        "reference_genome",
+        "source_url",
+        "original_source_url",
+        "source_sha256",
+        "license",
+        "attribution",
+        "evidence_refs"
+      ],
+      "properties": {
+        "organism": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tissue": {
+          "type": "string",
+          "minLength": 1
+        },
+        "donor_count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "reference_genome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "original_source_url": {
+          "type": "string",
+          "pattern": "^https://"
+        },
+        "source_sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "license": {
+          "type": "string",
+          "minLength": 1
+        },
+        "attribution": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "qc_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policy_id",
+        "policy_version",
+        "min_genes_inclusive",
+        "max_genes_exclusive",
+        "max_mito_pct_exclusive",
+        "mitochondrial_prefix",
+        "evidence_refs"
+      ],
+      "properties": {
+        "policy_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policy_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "min_genes_inclusive": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_genes_exclusive": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "max_mito_pct_exclusive": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        "mitochondrial_prefix": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "results": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metrics",
+        "evidence_refs",
+        "exclusions"
+      ],
+      "properties": {
+        "metrics": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "cells_total",
+            "cells_pass",
+            "cells_fail",
+            "features_total",
+            "total_counts",
+            "mitochondrial_features",
+            "qc_pass_fraction"
+          ],
+          "properties": {
+            "cells_total": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "cells_pass": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "cells_fail": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "features_total": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "total_counts": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mitochondrial_features": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "qc_pass_fraction": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        },
+        "exclusions": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "counts",
+            "reasons_may_overlap",
+            "evidence_refs"
+          ],
+          "properties": {
+            "counts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "zero_counts",
+                "low_genes",
+                "high_genes",
+                "high_mito"
+              ],
+              "properties": {
+                "zero_counts": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "low_genes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "high_genes": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "high_mito": {
+                  "type": "integer",
+                  "minimum": 0
+                }
+              }
+            },
+            "reasons_may_overlap": {
+              "const": true
+            },
+            "evidence_refs": {
+              "type": "array",
+              "minItems": 1,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9_]*$"
+              }
+            }
+          }
+        }
+      }
+    },
+    "dbt": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invocation_id",
+        "status",
+        "models_succeeded",
+        "tests_passed",
+        "evidence_refs"
+      ],
+      "properties": {
+        "invocation_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "const": "success"
+        },
+        "models_succeeded": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "tests_passed": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "uri",
+              "sha256"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "release_manifest",
+                  "dataset_config",
+                  "qc_policy",
+                  "dbt_audit",
+                  "dbt_manifest",
+                  "dbt_run_results"
+                ]
+              },
+              "uri": {
+                "type": "string",
+                "pattern": "^gs://[^/]+/.+$"
+              },
+              "sha256": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{64}$"
+              }
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "table_id"
+            ],
+            "properties": {
+              "kind": {
+                "const": "bigquery_table"
+              },
+              "table_id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*\\.[A-Za-z_][A-Za-z0-9_]*\\.[A-Za-z_][A-Za-z0-9_]*$"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "minItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

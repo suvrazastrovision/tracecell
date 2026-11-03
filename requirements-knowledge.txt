@@ -1,0 +1,3 @@
+-r requirements.txt
+-r requirements-warehouse.txt
+jsonschema>=4.26,<5
