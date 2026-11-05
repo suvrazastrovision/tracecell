@@ -14,18 +14,70 @@ healthy donor**. Under the recorded rules, **2,638 cells pass and 62 fail**.
 Source: 10x Genomics, **CC BY 4.0**; details are in
 [the dataset configuration](configs/dataset.yaml).
 
-## Data flow and steps
+## Complete data pipeline
+
+Solid arrows show processing and delivery. Dotted arrows show orchestration,
+evidence inputs and supporting services. Workflows runs the four jobs in order
+and checks their completion evidence before continuing.
 
 ```mermaid
 flowchart TD
-    A[Public count matrix] --> B[1. Download and check the file]
-    B --> C[2. Measure cell quality and save a release]
-    C --> D[3. Load metadata into BigQuery]
-    D --> E[4. Build and test SQL summaries with dbt]
-    E --> F[5. Generate, verify and publish knowledge]
-    F --> G[6. Separately select and bundle a reviewed snapshot]
-    G --> H[Assistant answers supported questions with evidence]
+    subgraph Control["Start and coordinate"]
+        Schedule["Cloud Scheduler: Monday 09:00 Europe/Berlin"] --> Workflow["Workflows: pbmc-qc-workflow"]
+        Manual["Manual trigger"] --> Workflow
+        Workflow --> Lock{"Acquire GCS lock"}
+        Lock -->|Already held| Skip["Skip overlapping run"]
+    end
+
+    subgraph Processing["Four sequential Cloud Run Jobs"]
+        Source["Public PBMC3k .h5ad: unnormalized counts"] --> QC["1. pbmc-qc: download, checksum and cell quality checks"]
+        Config["Dataset identity and recorded QC policy"] -.-> QC
+        QC --> Release["GCS committed release: counts.h5ad, cell and gene Parquet, summary and manifest"]
+        Release --> QCReceipt["Execution-specific QC receipt: verify release and object generation"]
+        QCReceipt --> Load["2. pbmc-warehouse-load: validate, load or reuse matching tables"]
+        Load --> Raw["BigQuery pbmc_raw: release-specific cells, genes and summary"]
+        Raw --> Dbt["3. pbmc-dbt-build: build six models and run 30 data tests"]
+        Dbt --> Analytics["BigQuery release-specific analytics: staging, QC summary, exclusions and passing cohort"]
+        Dbt --> DbtEvidence["GCS dbt artifacts, audit and execution-specific receipt"]
+        DbtEvidence --> Handoff["Verify successful dbt execution, invocation and receipt generation"]
+        Handoff --> Knowledge["4. pbmc-knowledge-build: generate draft OKF"]
+        Analytics --> Knowledge
+        Knowledge --> Validate["Independently validate schema, source counts, raw rows, analytics and exact cohort"]
+        Release -.-> Validate
+        Raw -.-> Validate
+        DbtEvidence -.-> Validate
+        Validate --> Publish["GCS versioned package: knowledge.json, report.md and validation.json; publication.json written last"]
+        Publish --> FinalReceipt["Verify knowledge completion receipt and publication identity"]
+    end
+
+    Lock -->|Acquired| QC
+    Workflow -.-> QCReceipt
+    Workflow -.-> Handoff
+    Workflow -.-> FinalReceipt
+    FinalReceipt --> Success["Workflow success: release exact lock generation"]
+
+    subgraph Serving["Separate assistant build and deployment"]
+        Publish --> Review["Review and pin selected publication; verify and bundle snapshot"]
+        Review --> Assistant["Authenticated Cloud Run assistant or local browser app"]
+        Assistant --> Answers["Supported questions: facts, evidence references and limitations"]
+    end
+
+    subgraph Operations["Infrastructure, failures and recovery"]
+        Terraform["Terraform: infrastructure and IAM; remote state in GCS"] -.-> Workflow
+        Images["Artifact Registry: digest-pinned container images"] -.-> QC
+        Images -.-> Load
+        Images -.-> Dbt
+        Images -.-> Knowledge
+        Workflow -.->|Pipeline failure| Retain["Retain lock; inspect owner and running tasks before recovery"]
+        Retain --> Logs["Cloud Logging and Monitoring failure policies"]
+        Schedule -.->|Delivery failure| Logs
+        Logs --> Inbox["Private Pub/Sub alert inbox"]
+    end
 ```
+
+The assistant keeps its selected snapshot until it is rebuilt and redeployed.
+Billing export is a separate reporting path: its BigQuery dataset and cost
+reporter are ready, but actual cost records are still pending.
 
 | Step | In simple words | Tool |
 | --- | --- | --- |
