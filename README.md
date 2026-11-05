@@ -1,133 +1,122 @@
-## scRNA-seq Knowledge Platform
+# scRNA-seq Knowledge Platform
 
-A GCP data engineering portfolio project for reproducible scRNA-seq data
-processing, quality controls, analytics, and Open Knowledge Format (OKF).
+A Google Cloud data engineering portfolio project that turns public single-cell
+RNA sequencing counts into checked tables, a readable report and an evidence assistant.
 
-The platform turns a public PBMC count matrix into traceable SQL tables and a
-verified knowledge package and a bounded scientist-facing assistant. **Stages 1–6
-are complete** for this deterministic portfolio release. The authenticated cloud
-assistant accepts typed questions across six evidence topics; grammar routing
-passed 60 cloud regression cases without a language model. **Stage 7 operations
-are deployed and verified; actual-money reporting awaits billing-export data.**
+## Why this exists
 
-## Data flow
+A dataset alone does not explain which cells passed quality checks or where a
+reported number came from. This pipeline records the input, quality rules,
+processing steps and evidence so its results can be checked and reproduced.
+
+The current example is **PBMC3k: 2,700 cells and 32,738 gene features from one
+healthy donor**. Under the recorded rules, **2,638 cells pass and 62 fail**.
+Source: 10x Genomics, **CC BY 4.0**; details are in
+[the dataset configuration](configs/dataset.yaml).
+
+## Data flow and steps
 
 ```mermaid
-flowchart LR
-    Source[Public PBMC3k counts] --> QC[Cloud Run: ingestion and QC]
-    QC --> Release[GCS: committed release]
-    Release --> Load[Cloud Run: warehouse loader]
-    Load --> Raw[BigQuery: raw tables]
-    Raw --> dbt[Cloud Run: dbt build and tests]
-    dbt --> Analytics[BigQuery: analytics]
-    Analytics --> Knowledge[Cloud Run: generate, validate, publish]
-    Knowledge --> Package[GCS: verified knowledge package]
-    Package --> Snapshot[Pin and bundle reviewed snapshot]
-    Snapshot --> Assistant[Cloud Run: authenticated evidence assistant]
+flowchart TD
+    A[Public count matrix] --> B[1. Download and check the file]
+    B --> C[2. Measure cell quality and save a release]
+    C --> D[3. Load metadata into BigQuery]
+    D --> E[4. Build and test SQL summaries with dbt]
+    E --> F[5. Generate, verify and publish knowledge]
+    F --> G[6. Separately select and bundle a reviewed snapshot]
+    G --> H[Assistant answers supported questions with evidence]
 ```
 
-Google Cloud Workflows sequences the four jobs. Execution receipts bind each
-downstream stage to the selected release and successful upstream run. Terraform
-manages infrastructure and IAM; Artifact Registry holds digest-pinned images.
-The assistant snapshot is selected and bundled during its separate image build;
-new pipeline publications do not automatically change its answers.
+| Step | In simple words | Tool |
+| --- | --- | --- |
+| 1. Get the data | Download the expected file and check its fingerprint to detect changes. | Python |
+| 2. Check quality | Count genes and mitochondrial counts per cell, record pass/fail reasons, and save all cells in a versioned release. | Python, Cloud Storage |
+| 3. Load tables | Store cell/gene metadata and summaries; verify matching tables before reusing them on retries. The expression matrix stays outside BigQuery. | Cloud Run Job, BigQuery |
+| 4. Build analytics | Turn raw metadata into six useful SQL models and run 30 data tests. | Cloud Run Job, dbt |
+| 5. Publish knowledge | Independently check results against source data, then publish JSON facts, a report and validation evidence. | Cloud Run Job, Cloud Storage |
+| 6. Answer questions | Serve a selected verified package and show the evidence behind supported answers. | Local Python app or authenticated Cloud Run service |
 
-## What this demonstrates
+**OKF** is this project's name for its versioned JSON knowledge package. It
+contains facts, source references and limitations; it is not an external standard.
+The assistant uses fixed rules, without a language model. New publications require
+a separate assistant build and deployment before they change its answers.
 
-- Reproducible inputs and QC: a checksum-pinned count matrix, recorded policy,
-  code/runtime identity and immutable release publication with a final marker.
-- Safe warehouse loading: release-specific tables, explicit schemas, complete
-  readback checks and retries that reuse matching rows without appending duplicates.
-- Tested analytics: six dbt models and 30 data tests, with excluded cells retained
-  for audit and a separate passing-cell cohort.
-- Evidence-backed knowledge: schema checks, independent calculations from the
-  count matrix, exact cohort comparison, versioned publication and durable audits.
-- Scoped service accounts and isolated cloud fault tests, with documented limits.
+## How the cloud pipeline is managed
 
-## Dataset and scientific boundary
+- **Workflows** runs four jobs in order: QC, loading, dbt and knowledge. It checks
+  receipts linking each stage to the correct release and successful run.
+- **Cloud Scheduler** starts the workflow on Mondays at 09:00 Europe/Berlin.
+- A **Cloud Storage lock** skips overlapping workflow runs. Failed or cancelled
+  runs retain the lock for inspected recovery; cancelling a workflow does not
+  automatically stop its Cloud Run tasks.
+- **Terraform** defines infrastructure and access permissions. **Artifact
+  Registry** stores the container images used by the jobs.
+- **Logging, Monitoring and a private Pub/Sub inbox** record failures and deliver alerts.
 
-The initial release contains **2,700 cells and 32,738 features** from one healthy
-donor. Under the recorded QC policy, **2,638 cells pass and 62 fail**. The starting
-input is an unnormalized count matrix, not FASTQ sequencing reads. This pipeline
-does not infer cell types or support disease comparisons.
+## Run locally: easiest demo
 
-Dataset attribution: **10x Genomics, CC BY 4.0**. Source details and checksums are
-recorded in [the dataset configuration](configs/dataset.yaml) and
-[project purpose](docs/001-project-purpose.md).
-
-Here, OKF means this project's versioned JSON knowledge package. It does not
-claim conformance to an external Open Knowledge Format standard. The
-[example](examples/pbmc-knowledge-v1.json) is illustrative, with explicitly
-fictional evidence locations; it is not a verified cloud result.
-
-## Main GCP resources
-
-| Resource | Function |
-| --- | --- |
-| Cloud Storage | Raw cache, committed releases, execution receipts, knowledge versions and audits |
-| BigQuery | Raw release tables and dbt analytics |
-| Cloud Run Jobs | QC, warehouse loading, dbt and knowledge processing |
-| Cloud Run service | Authenticated assistant serving a selected verified snapshot |
-| Cloud Scheduler | Weekly guarded pipeline trigger |
-| Cloud Monitoring and Pub/Sub | Failure policies and a private notification inbox |
-| Workflows | Ordered execution and receipt checks |
-| Artifact Registry | Digest-pinned worker images |
-| IAM | Separate runtime identities and scoped access |
-| Cloud Logging | Structured processing and failure evidence |
-| Terraform GCS backend | Shared infrastructure state |
-
-## Review and reproduce
-
-- [Try the assistant](docs/017-assistant-foundation.md): run a supported question
-  locally using the archived verified package, without GCP credentials or an API key.
-- [Open the browser interface](docs/018-assistant-browser.md): choose a question
-  and view its answer, sources and limitations at `http://127.0.0.1:8765`.
-- [Typed questions and routing evaluation](docs/019-assistant-question-routing.md):
-  supported everyday phrasings, abstention boundaries and the 60-case evaluation.
-- [Cloud assistant and Windows access](docs/020-cloud-assistant.md): authenticated
-  deployment, runtime permissions, proxy instructions and accepted live results.
-- [Operations and recovery](docs/021-operations.md): weekly scheduling, atomic
-  concurrency guard, real failure-notification delivery and manual recovery.
-- [Actual cost reporting](docs/022-actual-cost-reporting.md): prepared billing
-  dataset, required export setup and the tested reporter; no invented zero costs.
-- [Portfolio walkthrough](docs/016-portfolio-walkthrough.md): a short manual demo
-  and interview explanations.
-- [Archived verified report](examples/pbmc-verified-report.md): the exact readable
-  output from the successful Stage 5 cloud run, viewable without GCP access.
-- [Cloud knowledge architecture](docs/014-cloud-knowledge.md): deployment,
-  permissions, retry boundaries and a real successful execution.
-- [Knowledge recovery checks](docs/015-knowledge-recovery.md) and
-  [earlier pipeline drills](docs/009-pipeline-operations.md): expected failures,
-  recovery evidence and production-isolation checks.
-- [Archived recovery results](examples/knowledge-recovery-evidence.json): actual
-  workflow IDs, attempts and verified fault reasons for all five knowledge cases.
-- [Knowledge contract](docs/010-knowledge-contract.md),
-  [independent validation](docs/012-knowledge-validation.md) and
-  [publication protocol](docs/013-knowledge-publication.md).
-
-For offline tests on Python 3.11, from PowerShell at the repository root:
+Install **Python 3.11**, open this repository folder in VS Code, and run these
+commands in its **PowerShell terminal**. No GCP login or AI API key is needed
+for the bundled assistant demo.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements-knowledge-dev.txt -r requirements-warehouse-dev.txt
-python -m pytest -q
+.\.venv\Scripts\python.exe -m pip install -r requirements-knowledge.txt
+$env:PYTHONPATH = 'src'
+.\.venv\Scripts\python.exe -m pbmc_platform.assistant_web
 ```
 
-The latest full run passed **352 tests**. Tests use generated fixtures and fake cloud services. They do not need GCP
-credentials. Cloud deployment and live drill commands require the caller's own
-ADC and appropriate permissions; no credentials or service account keys are
-included. Generated reports are under the ignored `artifacts/` directory; the
-documentation records evidence IDs and explains how to reproduce them.
+Open **http://127.0.0.1:8765** and ask **How many cells passed QC?**
+Expected result: **2,638 of 2,700 cells passed QC; 62 failed.**
+Keep the terminal running; press **Ctrl+C** to stop. When reopening the project,
+run the last two commands again. These commands use the virtual environment
+without requiring PowerShell activation.
 
-## Remaining work and limits
+This demo reads an archived verified result; it does not rerun the cloud pipeline.
+You can also read the [verified report](examples/pbmc-verified-report.md) directly.
 
-Stages 7.1–7.3 provide weekly scheduling, a distributed concurrency lock and
-verified private failure notifications. Stage 7.4's dataset and cost reporter are
-ready; exported billing rows are still required for actual money totals.
-Model-based language support, independent freshness alarms, human notification
-receipt, cost-saving claims and live timeout/cancellation tests of actual Cloud
-Run data tasks remain outside the accepted evidence. Administrative direct job
-runs can bypass the workflow guard. A workflow cancellation does not automatically cancel Cloud Run tasks.
-The full readback strategy is intentional for this bounded portfolio dataset;
-larger datasets would need a different verification and cost strategy.
+## Run the processing
+
+To download the configured public input and run QC locally, use the environment
+above and run:
+
+```powershell
+$env:PYTHONPATH = 'src'
+.\.venv\Scripts\python.exe -m pbmc_platform.run_qc
+```
+
+The first run needs internet access. Outputs are saved under `data/processed/`
+and audit records under `artifacts/`. This runs the acquisition/QC stage only;
+it does not load BigQuery or update the assistant snapshot.
+
+To run the full pipeline in the **already provisioned project**, install the
+Google Cloud CLI, sign in with an account authorized to run this workflow, then:
+
+```powershell
+gcloud auth login
+gcloud workflows run pbmc-qc-workflow --project=pbmc-okf-portfolio --location=europe-west1
+```
+
+Inspect the execution in Google Cloud Console ? Workflows ?
+`pbmc-qc-workflow`. Cloud runs can incur charges. A different GCP project needs
+its own infrastructure, IAM and configuration; the command above is not a fresh
+installation. Infrastructure definitions are in [infra/](infra/).
+
+## Future utility and current limits
+
+The next extension is an upload interface: select an `.h5ad` count matrix, choose
+QC parameters, submit a run and download its verified results. Supporting other
+samples requires input/configuration changes and review of scientific assumptions.
+Multi-sample metadata and analysis would be a further extension. These features
+are planned, not implemented.
+
+The current input requires sparse, unnormalized counts in `adata.X`, unique cell
+barcodes and original gene IDs. This project does not process FASTQ reads, infer
+cell types or support disease comparisons. Its full-data checks are designed for
+this small dataset; larger inputs need performance and cost evaluation.
+
+The recorded acceptance suite passed **352 Python tests**. Scheduling, recovery
+and private failure-alert delivery were verified. Actual cost reporting awaits
+billing-export records, so no actual spend or savings figure is claimed.
+
+Detailed working notes in `docs/` are kept locally and ignored by Git.

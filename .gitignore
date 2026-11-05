@@ -5,6 +5,7 @@ __pycache__/
 .pytest_cache/
 data/
 artifacts/
+/docs/
 warehouse/dbt/target*/
 warehouse/dbt/logs/
 warehouse/dbt/dbt_packages/
