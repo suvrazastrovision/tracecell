@@ -1,0 +1,136 @@
+{
+  "description": "Curated summary of the isolated live knowledge recovery suite; full local evidence is not committed.",
+  "project": "pbmc-okf-portfolio",
+  "region": "europe-west1",
+  "status": "success",
+  "started_at": "2026-11-04T20:39:09.989153+00:00",
+  "finished_at": "2026-11-04T20:47:58.464877+00:00",
+  "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+  "upstream_dbt_execution": "pbmc-drill-dbt-handoff-jbkfj",
+  "upstream_dbt_run_id": "50993ac3c27543618bbf331dda97e084",
+  "full_report_path": "artifacts/knowledge_drills/20261104T203909Z/report.json",
+  "full_report_sha256": "9b3d75ac77fa2c660946fa99cdee0b326c709d5dcf2da5ec457ca025e37e237a",
+  "reason_verification_sha256": "0516f08f51e3bbe87dd73ab275b22bc674c8c00de535250377d4fbff238761fd",
+  "production_objects_and_tables_unchanged": true,
+  "isolated_source_objects_and_tables_unchanged_after_dbt_preparation": true,
+  "cases": [
+    {
+      "scenario": "invalid_handoff",
+      "verification_status": "passed",
+      "workflow_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-knowledge-drills/executions/8736c92e-a7bb-40c9-8e0a-ada1a8ef9804",
+      "workflow_state": "FAILED",
+      "cloud_run_execution": "projects/pbmc-okf-portfolio/locations/europe-west1/jobs/pbmc-drill-knowledge/executions/pbmc-drill-knowledge-8zjmn",
+      "runtime_service_account": "pbmc-drill-knowledge@pbmc-okf-portfolio.iam.gserviceaccount.com",
+      "task_attempts": [
+        0,
+        1
+      ],
+      "cloud_audit_statuses": [
+        "failed",
+        "failed"
+      ],
+      "validation_reports": 0,
+      "new_package_objects": 0,
+      "package_id": null,
+      "fault_evidence": {
+        "scenario": "invalid_handoff",
+        "expected_fault_reason": "Selected dbt run differs from execution receipt",
+        "verified": true
+      }
+    },
+    {
+      "scenario": "validation_fail",
+      "verification_status": "passed",
+      "workflow_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-knowledge-drills/executions/0b22517a-93ba-4926-a316-c4f283bfe9f3",
+      "workflow_state": "FAILED",
+      "cloud_run_execution": "projects/pbmc-okf-portfolio/locations/europe-west1/jobs/pbmc-drill-knowledge/executions/pbmc-drill-knowledge-5csk2",
+      "runtime_service_account": "pbmc-drill-knowledge@pbmc-okf-portfolio.iam.gserviceaccount.com",
+      "task_attempts": [
+        0,
+        1
+      ],
+      "cloud_audit_statuses": [
+        "failed",
+        "failed"
+      ],
+      "validation_reports": 2,
+      "new_package_objects": 0,
+      "package_id": null,
+      "fault_evidence": {
+        "scenario": "validation_fail",
+        "expected_fault_reason": "Package metrics differs: cells_total",
+        "verified": true
+      }
+    },
+    {
+      "scenario": "publication_retry",
+      "verification_status": "passed",
+      "workflow_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-knowledge-drills/executions/3df94429-8507-4925-9642-dc823a6c3e4d",
+      "workflow_state": "SUCCEEDED",
+      "cloud_run_execution": "projects/pbmc-okf-portfolio/locations/europe-west1/jobs/pbmc-drill-knowledge/executions/pbmc-drill-knowledge-wtft8",
+      "runtime_service_account": "pbmc-drill-knowledge@pbmc-okf-portfolio.iam.gserviceaccount.com",
+      "task_attempts": [
+        0,
+        1
+      ],
+      "cloud_audit_statuses": [
+        "failed",
+        "success"
+      ],
+      "validation_reports": 2,
+      "new_package_objects": 5,
+      "package_id": "04483774839eacbf399f954ee383c9db0696448ed30bd6df39bb50d246e269a4",
+      "fault_evidence": {
+        "scenario": "publication_retry",
+        "expected_fault_reason": "DRILL: publication interrupted after knowledge.json committed",
+        "verified": true
+      }
+    },
+    {
+      "scenario": "completion_retry",
+      "verification_status": "passed",
+      "workflow_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-knowledge-drills/executions/6eab217a-f8de-44d8-b505-90f81d3e5b63",
+      "workflow_state": "SUCCEEDED",
+      "cloud_run_execution": "projects/pbmc-okf-portfolio/locations/europe-west1/jobs/pbmc-drill-knowledge/executions/pbmc-drill-knowledge-hwlq4",
+      "runtime_service_account": "pbmc-drill-knowledge@pbmc-okf-portfolio.iam.gserviceaccount.com",
+      "task_attempts": [
+        0,
+        1
+      ],
+      "cloud_audit_statuses": [
+        "success",
+        "success"
+      ],
+      "validation_reports": 1,
+      "new_package_objects": 4,
+      "package_id": "e643adfaeca61174308bc1c41f04dc2d294b05642e187585fa74fafb0128b835",
+      "fault_evidence": {
+        "scenario": "completion_retry",
+        "expected_fault_reason": "DRILL: task interrupted after durable completion receipt",
+        "verified": true
+      }
+    },
+    {
+      "scenario": "healthy",
+      "verification_status": "passed",
+      "workflow_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-knowledge-drills/executions/87682d47-6404-442f-95e4-b84a4fe9f488",
+      "workflow_state": "SUCCEEDED",
+      "cloud_run_execution": "projects/pbmc-okf-portfolio/locations/europe-west1/jobs/pbmc-drill-knowledge/executions/pbmc-drill-knowledge-h84rb",
+      "runtime_service_account": "pbmc-drill-knowledge@pbmc-okf-portfolio.iam.gserviceaccount.com",
+      "task_attempts": [
+        0
+      ],
+      "cloud_audit_statuses": [
+        "success"
+      ],
+      "validation_reports": 1,
+      "new_package_objects": 4,
+      "package_id": "4a3932e4daea8dd053b636987eda8676240e69a9f81abc7741ea99742ac578b0",
+      "fault_evidence": {
+        "scenario": "healthy",
+        "expected_fault_reason": null,
+        "verified": true
+      }
+    }
+  ]
+}

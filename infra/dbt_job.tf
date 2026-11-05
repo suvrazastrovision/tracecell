@@ -15,9 +15,9 @@ resource "google_cloud_run_v2_job" "dbt" {
       timeout         = "1200s"
       max_retries     = 1
       containers {
-        image       = "europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-warehouse@sha256:ccb29689345a600fa92123eb91363eb023c8bb4d41d474dd0417b8dd0ddc1398"
+        image       = var.knowledge_worker_image
         working_dir = "/app"
-        command     = ["python", "-m", "pbmc_platform.run_cloud_dbt"]
+        command     = ["python", "-m", "pbmc_platform.run_dbt_handoff"]
         args = [
           "--project", "pbmc-okf-portfolio",
           "--bucket", google_storage_bucket.pipeline_data.name,

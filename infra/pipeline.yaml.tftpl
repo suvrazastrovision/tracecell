@@ -79,6 +79,106 @@ main:
           connector_params:
             timeout: 2700
         result: dbt_execution
+%{ if enable_knowledge ~}
+    - dbt_receipt_name:
+        assign:
+          - dbt_handoff_object: $${"runs/handoffs/dbt/" + dbt_execution.metadata.name + ".json"}
+    - dbt_receipt_metadata:
+        call: googleapis.storage.v1.objects.get
+        args:
+          bucket: ${bucket}
+          object: $${text.url_encode(dbt_handoff_object)}
+        result: dbt_receipt_metadata
+    - read_dbt_receipt:
+        call: http.get
+        args:
+          url: $${"https://storage.googleapis.com/storage/v1/b/${bucket}/o/" + text.url_encode(dbt_handoff_object)}
+          auth:
+            type: OAuth2
+          query:
+            alt: media
+            generation: $${dbt_receipt_metadata.generation}
+            ifGenerationMatch: $${dbt_receipt_metadata.generation}
+        result: dbt_receipt_response
+    - dbt_receipt_body:
+        assign:
+          - dbt_receipt: $${dbt_receipt_response.body}
+    - require_dbt_json:
+        switch:
+          - condition: $${get_type(dbt_receipt) != "map"}
+            steps:
+              - invalid_dbt_json:
+                  raise: "dbt receipt must be a JSON object"
+    - validate_dbt_handoff:
+        switch:
+          - condition: $${map.get(dbt_receipt, "schema_version") != 1 or map.get(dbt_receipt, "status") != "success" or map.get(dbt_receipt, "cloud_execution") != dbt_execution.metadata.name or map.get(dbt_receipt, "release_id") != release_id}
+            steps:
+              - invalid_dbt_execution:
+                  raise: "dbt receipt does not identify the selected successful execution and release"
+          - condition: $${map.get(dbt_receipt, "project") != "${project}" or map.get(dbt_receipt, "bucket") != "${bucket}" or map.get(dbt_receipt, "analytics_dataset") != "${analytics}"}
+            steps:
+              - invalid_dbt_destination:
+                  raise: "dbt receipt destination differs from the provisioned datasets"
+          - condition: $${get_type(map.get(dbt_receipt, "dbt_run_id")) != "string"}
+            steps:
+              - invalid_dbt_run:
+                  raise: "dbt receipt run ID is missing or invalid"
+    - run_knowledge:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: namespaces/${project}/jobs/${knowledge_job}
+          location: ${location}
+          body:
+            overrides:
+              containerOverrides:
+                - args: ["--project", "${project}", "--bucket", "${bucket}", "--release-id", "$${release_id}", "--dbt-run-id", "$${dbt_receipt.dbt_run_id}", "--dbt-execution", "$${dbt_execution.metadata.name}", "--dbt-handoff-generation", "$${dbt_receipt_metadata.generation}", "--raw-dataset", "${raw_dataset}", "--location", "${location}"]
+          connector_params:
+            timeout: 3900
+        result: knowledge_execution
+    - knowledge_receipt_name:
+        assign:
+          - knowledge_handoff_object: $${"runs/handoffs/knowledge/" + knowledge_execution.metadata.name + ".json"}
+    - knowledge_receipt_metadata:
+        call: googleapis.storage.v1.objects.get
+        args:
+          bucket: ${bucket}
+          object: $${text.url_encode(knowledge_handoff_object)}
+        result: knowledge_receipt_metadata
+    - read_knowledge_receipt:
+        call: http.get
+        args:
+          url: $${"https://storage.googleapis.com/storage/v1/b/${bucket}/o/" + text.url_encode(knowledge_handoff_object)}
+          auth:
+            type: OAuth2
+          query:
+            alt: media
+            generation: $${knowledge_receipt_metadata.generation}
+            ifGenerationMatch: $${knowledge_receipt_metadata.generation}
+        result: knowledge_receipt_response
+    - knowledge_receipt_body:
+        assign:
+          - knowledge_receipt: $${knowledge_receipt_response.body}
+    - require_knowledge_json:
+        switch:
+          - condition: $${get_type(knowledge_receipt) != "map"}
+            steps:
+              - invalid_knowledge_json:
+                  raise: "Knowledge receipt must be a JSON object"
+    - validate_knowledge_handoff:
+        switch:
+          - condition: $${map.get(knowledge_receipt, "schema_version") != 1 or map.get(knowledge_receipt, "status") != "success" or map.get(knowledge_receipt, "cloud_execution") != knowledge_execution.metadata.name or map.get(knowledge_receipt, "release_id") != release_id}
+            steps:
+              - invalid_knowledge_execution:
+                  raise: "Knowledge receipt does not identify this successful execution and its dbt input"
+          - condition: $${map.get(knowledge_receipt, "dbt_execution") != dbt_execution.metadata.name or map.get(knowledge_receipt, "dbt_run_id") != dbt_receipt.dbt_run_id}
+            steps:
+              - invalid_knowledge_input:
+                  raise: "Knowledge receipt dbt input differs from this workflow execution"
+          - condition: $${map.get(knowledge_receipt, "project") != "${project}" or map.get(knowledge_receipt, "bucket") != "${bucket}"}
+            steps:
+              - invalid_knowledge_destination:
+                  raise: "Knowledge receipt destination differs from this workflow"
+%{ endif ~}
     - completed:
         return:
           status: success
@@ -89,3 +189,13 @@ main:
           dbt_execution: $${dbt_execution.metadata.name}
           handoff_uri: $${"gs://${bucket}/" + handoff_object}
           handoff_generation: $${receipt_metadata.generation}
+%{ if enable_knowledge ~}
+          dbt_run_id: $${dbt_receipt.dbt_run_id}
+          dbt_handoff_uri: $${"gs://${bucket}/" + dbt_handoff_object}
+          dbt_handoff_generation: $${dbt_receipt_metadata.generation}
+          knowledge_execution: $${knowledge_execution.metadata.name}
+          knowledge_handoff_uri: $${"gs://${bucket}/" + knowledge_handoff_object}
+          knowledge_handoff_generation: $${knowledge_receipt_metadata.generation}
+          knowledge_package_id: $${knowledge_receipt.result.package_id}
+          knowledge_publication_uri: $${knowledge_receipt.result.publication_uri}
+%{ endif ~}

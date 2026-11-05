@@ -110,6 +110,13 @@ exclusion rows and 2,638 QC-passing cohort cells. The QC mart reconciled
 Generated local evidence is in `artifacts/pipeline_execution.json` and
 `artifacts/pipeline_verification.json`, excluded from Git.
 
+## Knowledge extension
+
+Stage 5.5 adds an execution-bound dbt receipt and the knowledge worker after this
+three-stage baseline. The workflow now returns the verified knowledge package ID
+and publication URI. See [cloud knowledge automation](014-cloud-knowledge.md) for
+the additional receipts, runtime identities, permissions and retry boundary.
+
 ## References
 
 - [Workflows Cloud Run job connector](https://docs.cloud.google.com/workflows/docs/reference/googleapis/run/v1/namespaces.jobs/run).

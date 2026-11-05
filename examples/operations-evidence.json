@@ -1,0 +1,90 @@
+{
+  "status": "operations_verified_cost_data_pending",
+  "project": "pbmc-okf-portfolio",
+  "region": "europe-west1",
+  "schedule": {
+    "cron": "0 9 * * 1",
+    "time_zone": "Europe/Berlin",
+    "enabled": true
+  },
+  "workflow_revision": "000005-b62",
+  "lock_cases": [
+    {
+      "scenario": "contention_owner",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/caa17798-4e06-4c01-bee1-d4eca9ed7f9b"
+    },
+    {
+      "scenario": "contention_skipped",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/e9ad404a-b047-4f59-8179-1a311a23fd40"
+    },
+    {
+      "scenario": "failure_retained",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/48de47ef-e326-4342-9cd9-2c4e7f84c21a"
+    },
+    {
+      "scenario": "failed_lock_blocks",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/eb262f76-632a-4a7f-89d9-da17a9c0bb8d"
+    },
+    {
+      "scenario": "cancelled_retained",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/39fe26d8-0ee5-4042-8053-86ff72d58568"
+    },
+    {
+      "scenario": "healthy_recovery",
+      "status": "passed",
+      "execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-pipeline-guard-drill/executions/c69b3c50-97f6-468e-a3c5-cfb9176bd7f5"
+    }
+  ],
+  "production_execution": "projects/288934902878/locations/europe-west1/workflows/pbmc-qc-workflow/executions/d9ced541-0f8c-445b-9623-8a5417073776",
+  "production_state": "SUCCEEDED",
+  "production_outcome": {
+    "analytics_dataset": "pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+    "dbt_execution": "pbmc-dbt-build-dbx9n",
+    "dbt_handoff_generation": "1793873219893769",
+    "dbt_handoff_uri": "gs://pbmc-okf-portfolio-data/runs/handoffs/dbt/pbmc-dbt-build-dbx9n.json",
+    "dbt_run_id": "3bdddfbb7e494e8c977dafd195a78389",
+    "handoff_generation": "1793873073999185",
+    "handoff_uri": "gs://pbmc-okf-portfolio-data/runs/handoffs/qc/pbmc-qc-97h9x.json",
+    "knowledge_execution": "pbmc-knowledge-build-k8dnb",
+    "knowledge_handoff_generation": "1793873292898092",
+    "knowledge_handoff_uri": "gs://pbmc-okf-portfolio-data/runs/handoffs/knowledge/pbmc-knowledge-build-k8dnb.json",
+    "knowledge_package_id": "f5b2d95bbd10b1098b5d6d9a11e54d48c3d18ee55dbdaca95464508bc55c8c1c",
+    "knowledge_publication_uri": "gs://pbmc-okf-portfolio-data/knowledge/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/f5b2d95bbd10b1098b5d6d9a11e54d48c3d18ee55dbdaca95464508bc55c8c1c/publication.json",
+    "qc_execution": "pbmc-qc-97h9x",
+    "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+    "status": "success",
+    "warehouse_execution": "pbmc-warehouse-load-k9kks"
+  },
+  "cohort_rows": 2638,
+  "pipeline_alert": {
+    "message_id": "23082201450364026",
+    "incident_id": "0.oenomwvc4chb",
+    "verified": true
+  },
+  "scheduler_failure_alert": {
+    "message_id": "23276006880447360",
+    "incident_id": "0.oenp9lq4r2ao",
+    "verified": true,
+    "drill_restored_paused": true
+  },
+  "operations_report": {
+    "path": "artifacts/operations/20261105T095724Z/report.json",
+    "sha256": "738f04ec9f38342aede9c70ffef1a7245f1fa31a8828db62c4f7b664344bda60"
+  },
+  "scheduler_failure_report": {
+    "path": "artifacts/scheduler_failure_verification.json",
+    "sha256": "113a73acdac4e4373362281a4b171fb6816501e6e04f83e52fab831ef7ab4787"
+  },
+  "full_test_suite_passed": 352,
+  "actual_cost_reporting": {
+    "status": "awaiting_billing_export",
+    "dataset": "pbmc-okf-portfolio.pbmc_billing_export",
+    "currency_totals": null
+  },
+  "finished_at": "2026-11-05T10:26:54.225713+00:00"
+}

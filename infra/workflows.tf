@@ -14,7 +14,7 @@ resource "google_service_account" "workflow_runner" {
   project      = "pbmc-okf-portfolio"
   account_id   = "pbmc-workflow-runner"
   display_name = "PBMC pipeline workflow"
-  description  = "Runs QC, warehouse loading and dbt with an execution-bound release handoff."
+  description  = "Runs QC, warehouse, dbt and verified knowledge publication using execution receipts."
 
   depends_on = [google_project_service.iam]
 }
@@ -41,7 +41,7 @@ resource "google_workflows_workflow" "qc" {
   project             = "pbmc-okf-portfolio"
   name                = "pbmc-qc-workflow"
   region              = "europe-west1"
-  description         = "Run QC, consume its execution receipt, then load and test the same release."
+  description         = "QC to warehouse to dbt to independently verified knowledge publication."
   service_account     = google_service_account.workflow_runner.id
   deletion_protection = false
 
@@ -50,17 +50,24 @@ resource "google_workflows_workflow" "qc" {
     environment = "portfolio"
   }
 
-  source_contents = templatefile("${path.module}/pipeline.yaml.tftpl", {
-    project       = google_cloud_run_v2_job.qc.project
-    location      = google_cloud_run_v2_job.qc.location
-    qc_job        = google_cloud_run_v2_job.qc.name
-    warehouse_job = google_cloud_run_v2_job.warehouse.name
-    dbt_job       = google_cloud_run_v2_job.dbt.name
-    bucket        = google_storage_bucket.pipeline_data.name
-    raw_dataset   = data.google_bigquery_dataset.raw.dataset_id
-    release_id    = var.warehouse_release_id
-    analytics     = google_bigquery_dataset.analytics.dataset_id
-  })
+  source_contents = yamlencode(merge(
+    yamldecode(templatefile("${path.module}/pipeline_guard.yaml.tftpl", {
+      bucket   = google_storage_bucket.pipeline_data.name, lock_object = "operations/locks/production-pipeline.json",
+      workflow = "pbmc-qc-workflow"
+    })),
+    { pipeline = merge(yamldecode(templatefile("${path.module}/pipeline.yaml.tftpl", {
+      project          = google_cloud_run_v2_job.qc.project
+      location         = google_cloud_run_v2_job.qc.location
+      qc_job           = google_cloud_run_v2_job.qc.name
+      warehouse_job    = google_cloud_run_v2_job.warehouse.name
+      dbt_job          = google_cloud_run_v2_job.dbt.name
+      bucket           = google_storage_bucket.pipeline_data.name
+      raw_dataset      = data.google_bigquery_dataset.raw.dataset_id
+      release_id       = var.warehouse_release_id
+      analytics        = google_bigquery_dataset.analytics.dataset_id
+      enable_knowledge = true
+      knowledge_job    = google_cloud_run_v2_job.knowledge.name
+  })).main, { params = ["input"] }) }))
 
   depends_on = [
     google_project_service.workflows,
@@ -70,6 +77,8 @@ resource "google_workflows_workflow" "qc" {
     google_cloud_run_v2_job_iam_member.workflow_downstream_execute,
     google_cloud_run_v2_job_iam_member.workflow_downstream_read,
     google_storage_bucket_iam_member.workflow_handoff,
+    google_storage_bucket_iam_member.pipeline_lock["production"],
+    google_project_iam_member.guard_logging["production"],
   ]
 }
 
@@ -77,6 +86,7 @@ resource "google_cloud_run_v2_job_iam_member" "workflow_downstream_execute" {
   for_each = {
     warehouse = google_cloud_run_v2_job.warehouse.name
     dbt       = google_cloud_run_v2_job.dbt.name
+    knowledge = google_cloud_run_v2_job.knowledge.name
   }
   project  = "pbmc-okf-portfolio"
   location = "europe-west1"
@@ -89,6 +99,7 @@ resource "google_cloud_run_v2_job_iam_member" "workflow_downstream_read" {
   for_each = {
     warehouse = google_cloud_run_v2_job.warehouse.name
     dbt       = google_cloud_run_v2_job.dbt.name
+    knowledge = google_cloud_run_v2_job.knowledge.name
   }
   project  = "pbmc-okf-portfolio"
   location = "europe-west1"
@@ -102,8 +113,12 @@ resource "google_storage_bucket_iam_member" "workflow_handoff" {
   role   = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.workflow_runner.email}"
   condition {
-    title      = "workflow-read-qc-execution-receipts"
-    expression = "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/qc/')"
+    title = "workflow-read-qc-execution-receipts"
+    expression = join(" || ", [
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/qc/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/dbt/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/knowledge/')",
+    ])
   }
 }
 

@@ -1,0 +1,70 @@
+main:
+  params: [args]
+  steps:
+    - identity:
+        assign:
+          - owner: $${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+    - acquire:
+        try:
+          call: http.post
+          args:
+            url: https://storage.googleapis.com/upload/storage/v1/b/${bucket}/o
+            auth: {type: OAuth2}
+            query:
+              uploadType: media
+              name: ${lock_object}
+              ifGenerationMatch: 0
+            headers: {Content-Type: application/json}
+            body:
+              schema_version: 1
+              owner: $${owner}
+              workflow: ${workflow}
+              acquired_at: $${time.format(sys.now())}
+          result: lock
+        except:
+          as: error
+          steps:
+            - contention:
+                switch:
+                  - condition: $${map.get(error, "code") == 412}
+                    steps:
+                      - skipped_log:
+                          call: sys.log
+                          args:
+                            severity: WARNING
+                            json: {event: pipeline_skipped_lock_held, execution: "$${owner}"}
+                      - skipped:
+                          return: {status: skipped_lock_held}
+            - acquire_error:
+                raise: $${error}
+    - run_pipeline:
+        try:
+          call: pipeline
+          args: {input: "$${args}"}
+          result: pipeline_result
+        except:
+          as: error
+          steps:
+            - failure_log:
+                call: sys.log
+                args:
+                  severity: ERROR
+                  json:
+                    event: pipeline_failed_lock_retained
+                    execution: $${owner}
+                    lock_generation: $${lock.body.generation}
+            - failed:
+                raise: $${error}
+    - release:
+        call: http.delete
+        args:
+          url: $${"https://storage.googleapis.com/storage/v1/b/${bucket}/o/" + text.url_encode("${lock_object}")}
+          auth: {type: OAuth2}
+          query: {ifGenerationMatch: "$${lock.body.generation}"}
+    - success_log:
+        call: sys.log
+        args:
+          severity: INFO
+          json: {event: pipeline_succeeded_lock_released, execution: "$${owner}"}
+    - done:
+        return: $${pipeline_result}

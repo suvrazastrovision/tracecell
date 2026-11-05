@@ -1,0 +1,13 @@
+*
+!src/
+!src/**
+!schemas/
+!schemas/**
+!configs/
+!configs/assistant-package.json
+!examples/
+!examples/verified-pbmc/
+!examples/verified-pbmc/**
+!Dockerfile.assistant
+**/__pycache__
+**/*.py[cod]

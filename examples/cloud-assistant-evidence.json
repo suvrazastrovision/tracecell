@@ -1,0 +1,36 @@
+{
+  "status": "success",
+  "project": "pbmc-okf-portfolio",
+  "region": "europe-west1",
+  "service": "pbmc-assistant",
+  "uri": "https://pbmc-assistant-gjjq4syn4a-ew.a.run.app",
+  "ready_revision": "projects/pbmc-okf-portfolio/locations/europe-west1/services/pbmc-assistant/revisions/pbmc-assistant-00002-qzw",
+  "image": "europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-assistant@sha256:837337193ef8e03d43c3c475b596f1873af8d0c16ae76ad7583c34ccfd98e223",
+  "runtime_service_account": "pbmc-assistant@pbmc-okf-portfolio.iam.gserviceaccount.com",
+  "runtime_direct_project_roles": [],
+  "invoker_iam_check_enabled": true,
+  "public_invoker_binding": false,
+  "anonymous_http_statuses": {
+    "/": 403,
+    "/answer.json?question=qc": 403,
+    "/ready": 403
+  },
+  "authenticated_health": "ready",
+  "authenticated_html_verified": true,
+  "package_id": "e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f",
+  "publication_generation": 1793822792589953,
+  "publication_sha256": "c62eb3aed9169047246d0e07201b3076cf475883dd61d25d1975d87e8fd5b9c4",
+  "scaling": {
+    "maxInstanceCount": 1
+  },
+  "request_concurrency": 8,
+  "cases_sha256": "cc3d0b3a7b61286ba80aeb50a9b53675027b8cbae8f40f62ff77ed822ab7f7db",
+  "cloud_cases_passed": 60,
+  "started_at": "2026-11-04T22:11:20.014909+00:00",
+  "finished_at": "2026-11-04T22:11:43.836773+00:00",
+  "full_report_path": "artifacts/cloud_assistant_verification.json",
+  "full_report_sha256": "e68e040a4f67fa2dabd81d12c05494ffaab72aaa7d9e656691c1e7eae75c9fa5",
+  "focused_tests_passed": 139,
+  "terraform_final_plan": "no changes",
+  "local_container_uid": 10001
+}

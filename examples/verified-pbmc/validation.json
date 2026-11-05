@@ -1,0 +1,118 @@
+{
+  "analytics_base": "pbmc_analytics",
+  "bucket": "pbmc-okf-portfolio-data",
+  "checks_passed": [
+    "schema_identity_references_and_limitations",
+    "artifact_checksums_release_identity_and_recorded_configuration",
+    "independent_matrix_metrics_policy_flags_and_exclusion_union",
+    "successful_matching_dbt_invocation_and_complete_results",
+    "complete_raw_tables_recomputed_marts_and_exact_cohort_membership",
+    "object_generations_and_table_versions_stable_during_validation"
+  ],
+  "cohort_rows": 2638,
+  "dbt_invocation_id": "0a06c1ba-1d1a-42e1-b102-94e6bfd8ecf6",
+  "dbt_run_id": "e6a7f3d6f4194586b66399a763925cd1",
+  "exclusions": {
+    "high_genes": 5,
+    "high_mito": 57,
+    "low_genes": 0,
+    "zero_counts": 0
+  },
+  "finished_at": "2026-11-04T20:06:31.367428+00:00",
+  "input_path": "/tmp/pbmc-cloud-knowledge-lk12ddon/2f3ba030c8a94babb42fc44f4e5fbe33/draft/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/0a06c1ba-1d1a-42e1-b102-94e6bfd8ecf6/knowledge.json",
+  "input_sha256": "16a741da7adeb736ae6a817e3df1b77bd463e953544a2e622ae4c53c93c1efc2",
+  "location": "europe-west1",
+  "metrics": {
+    "cells_fail": 62,
+    "cells_pass": 2638,
+    "cells_total": 2700,
+    "features_total": 32738,
+    "mitochondrial_features": 13,
+    "qc_pass_fraction": 0.977037037037037,
+    "total_counts": 6390631
+  },
+  "numeric_tolerances": {
+    "counts": "exact",
+    "fraction_absolute": 1e-12,
+    "mean_absolute": 1e-12,
+    "mean_relative": 1e-12
+  },
+  "objects": {
+    "processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/cells.parquet": {
+      "generation": 1793490824396565,
+      "sha256": "b6daca42095487486492fd57c23e62f8f83f78685dd89fc141b0c9796d2c2abc"
+    },
+    "processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/counts.h5ad": {
+      "generation": 1793490825399413,
+      "sha256": "315ecd6126feb30534d4ca33852d3825fb3fa465cd49c8ea9724c914e0f931dd"
+    },
+    "processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/dataset_summary.parquet": {
+      "generation": 1793490824998530,
+      "sha256": "b7bbc4fe297d1ac507e27c82886814b3104e722c16639e62fc3369d33bd37cc6"
+    },
+    "processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/genes.parquet": {
+      "generation": 1793490824698519,
+      "sha256": "033995c683462f5e651248bb65cde06c8c23098f972ae6fe2f2c6b3ca5aa9c1c"
+    },
+    "processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/release.json": {
+      "generation": 1793490825801262,
+      "sha256": "a9aed764e4b3029b14d355fcea636103a415197ba9fffe1e870205c43d9aa746"
+    },
+    "runs/cloud_dbt/e6a7f3d6f4194586b66399a763925cd1.json": {
+      "generation": 1793822725701662,
+      "sha256": "18ead3e311cb106047721ee56bdc2783c2e7bc7d6de009add9bebbaa12f1f7d0"
+    },
+    "runs/dbt/e6a7f3d6f4194586b66399a763925cd1/manifest.json": {
+      "generation": 1793822724803752,
+      "sha256": "940392b63eb4fb686485b08b19e0b9e7c46a86f098d886c1ff1795bb6171ba0f"
+    },
+    "runs/dbt/e6a7f3d6f4194586b66399a763925cd1/run_results.json": {
+      "generation": 1793822725104076,
+      "sha256": "4e780980383623d4bcabbf95c87fa76a6153ea6d029db5a8ba1a0cea6f1ec3ae"
+    }
+  },
+  "outputs": {
+    "knowledge.json": "d323a1d2c854dbf5f8c73afba56172567e8bf67a93781323c87bbc81c4698f95",
+    "report.md": "2cb9c83c74c27e0f0eaa855e9cebeabd3fc4f802853d168e0fd6e12fcdc0d8f9"
+  },
+  "project": "pbmc-okf-portfolio",
+  "raw_dataset": "pbmc_raw",
+  "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+  "schema_sha256": "b5cb2180f7a9c02dab96848fd8c664ddd5890783c9f685db99d0be2203f4935d",
+  "started_at": "2026-11-04T20:06:25.301645+00:00",
+  "status": "verified",
+  "tables": {
+    "pbmc-okf-portfolio.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_cohort_cells": {
+      "etag": "ec6htwgW9n8DkuNEJ5NvzQ==",
+      "modified": "2026-11-04 20:05:20.132000+00:00",
+      "rows": 2638
+    },
+    "pbmc-okf-portfolio.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_dataset_qc": {
+      "etag": "Fuw5tBd5Wij2apI+gnZ/AA==",
+      "modified": "2026-11-04 20:05:21.854000+00:00",
+      "rows": 1
+    },
+    "pbmc-okf-portfolio.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_qc_exclusions": {
+      "etag": "fE+9j1OfqzEf/3BLsG+BPA==",
+      "modified": "2026-11-04 20:05:20.669000+00:00",
+      "rows": 4
+    },
+    "pbmc-okf-portfolio.pbmc_raw.cells_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d": {
+      "etag": "H/Pnw9yhdWKqnIf9US7WKQ==",
+      "modified": "2026-11-01 09:00:26.188000+00:00",
+      "rows": 2700
+    },
+    "pbmc-okf-portfolio.pbmc_raw.dataset_summary_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d": {
+      "etag": "+5JhX7aflPcrOUYjTrGiew==",
+      "modified": "2026-11-01 09:00:34.798000+00:00",
+      "rows": 1
+    },
+    "pbmc-okf-portfolio.pbmc_raw.genes_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d": {
+      "etag": "kLevAPa/pK+k+0qkDYQa7g==",
+      "modified": "2026-11-01 09:00:31.215000+00:00",
+      "rows": 32738
+    }
+  },
+  "validation_id": "1b369acf859a47228ced5ba961ee7f30",
+  "validator_sha256": "488acead4faaf05a673fe4ac0936e971746eb0fcd85cfaa2b27ada41f3ee8bab"
+}

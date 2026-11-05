@@ -49,6 +49,8 @@ resource "google_storage_bucket_iam_member" "dbt_read" {
       "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/processed/releases/')",
       "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/dbt/')",
       "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/cloud_dbt/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/dbt_handoff/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/dbt/')",
     ])
   }
 }
@@ -62,6 +64,8 @@ resource "google_storage_bucket_iam_member" "dbt_artifacts" {
     expression = join(" || ", [
       "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/dbt/')",
       "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/cloud_dbt/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/dbt_handoff/')",
+      "resource.name.startsWith('projects/_/buckets/${google_storage_bucket.pipeline_data.name}/objects/runs/handoffs/dbt/')",
     ])
   }
 }

@@ -104,3 +104,7 @@ artifacts/knowledge/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b8
 The saved JSON passed schema validation and reproduced the report byte for byte.
 It records 2,700 cells, 2,638 passing, 62 failing, 32,738 features, six successful
 dbt models and 30 passing dbt tests. It is still a draft awaiting Stage 5.3.
+
+Stage 5.3 now provides [independent validation](012-knowledge-validation.md).
+The original draft remains unchanged; the successful validation produces a
+separate verified package and its audit.

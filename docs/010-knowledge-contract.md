@@ -1,8 +1,9 @@
 # PBMC knowledge package contract v1
 
 Stage 5.1 defines the interface for the generator and validator. Step 5.2 now
-generates local draft packages; independent verification and cloud publication
-remain subsequent substeps. See [the generator guide](011-knowledge-generator.md).
+generates local draft packages; Step 5.3 independently validates them.
+Step 5.4 publishes the verified bundle. See [the generator guide](011-knowledge-generator.md),
+[validation guide](012-knowledge-validation.md) and [publication guide](013-knowledge-publication.md).
 
 ## Purpose and files
 
@@ -54,7 +55,7 @@ scientific evidence.
 ## Validation contract
 
 There are two gates. The JSON Schema implements structural checks now. The
-source-aware validator in Step 5.3 must implement the semantic checks below.
+source-aware validator in Step 5.3 implements the semantic checks below.
 
 ### Structural gate
 
@@ -95,7 +96,7 @@ Require all four exclusion categories and `reasons_may_overlap: true`.
    the semantic validator checks these required meanings against fixed project
    statements. User-written text alone is insufficient for promotion.
 
-`package_status: verified` is a generator output after both gates succeed; it is
+`package_status: verified` is a validator output after both gates succeed; it is
 not a trusted assertion from an arbitrary JSON file. Consumers must use the
 trusted publication/validation path. The schema cannot check arithmetic,
 cross-references, cloud object existence or scientific correctness.

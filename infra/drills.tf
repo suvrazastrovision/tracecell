@@ -10,12 +10,13 @@ locals {
   )
   # Preserve production control flow; substitute only isolated resource names.
   drill_base = yamldecode(templatefile("${path.module}/pipeline.yaml.tftpl", {
-    project       = "pbmc-okf-portfolio", location = "europe-west1",
-    qc_job        = google_cloud_run_v2_job.drill["qc"].name,
-    warehouse_job = google_cloud_run_v2_job.drill["warehouse"].name,
-    dbt_job       = google_cloud_run_v2_job.drill["dbt"].name,
-    bucket        = google_storage_bucket.drill.name, raw_dataset = google_bigquery_dataset.drill["raw"].dataset_id,
-    release_id    = var.warehouse_release_id, analytics = google_bigquery_dataset.drill["analytics"].dataset_id,
+    project          = "pbmc-okf-portfolio", location = "europe-west1",
+    qc_job           = google_cloud_run_v2_job.drill["qc"].name,
+    warehouse_job    = google_cloud_run_v2_job.drill["warehouse"].name,
+    dbt_job          = google_cloud_run_v2_job.drill["dbt"].name,
+    bucket           = google_storage_bucket.drill.name, raw_dataset = google_bigquery_dataset.drill["raw"].dataset_id,
+    release_id       = var.warehouse_release_id, analytics = google_bigquery_dataset.drill["analytics"].dataset_id,
+    enable_knowledge = false, knowledge_job = "",
   }))
   # Fault selection is an execution override on drill jobs, never a production input.
   drill_calls = merge([for step in local.drill_base.main.steps : { for name, config in step : name => config if startswith(name, "run_") }]...)

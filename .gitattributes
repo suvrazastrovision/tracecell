@@ -1,0 +1,10 @@
+# Publication hashes cover exact bytes; do not convert these archived artifacts.
+examples/verified-pbmc/* -text
+# Validation records bind these source/schema hashes across checkouts.
+src/pbmc_platform/validate_knowledge.py text eol=lf
+schemas/pbmc-knowledge-v1.schema.json text eol=lf
+# Preserve source/corpus hashes recorded in the routing evaluation.
+src/pbmc_platform/assistant.py text eol=lf
+src/pbmc_platform/question_routing.py text eol=lf
+src/pbmc_platform/evaluate_assistant.py text eol=lf
+evaluations/*.json text eol=lf

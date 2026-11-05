@@ -3,21 +3,24 @@
 `infra/workflows.tf` defines `pbmc-qc-workflow` in `europe-west1`, using
 `infra/pipeline.yaml.tftpl`. It runs QC, reads the successful execution's
 committed receipt, then runs the BigQuery loader and dbt for that exact release.
+It consumes the successful dbt execution's receipt and runs knowledge generation,
+independent validation and publication before checking the final completion receipt.
 Each Cloud Run v1 connector call waits for completion. The region is explicit.
 A failed stage stops the workflow. See the [complete release handoff](008-pipeline-handoff.md).
 
 ## Identity and execution controls
 
 The dedicated `pbmc-workflow-runner` service account receives job-scoped
-`roles/run.invoker` and `roles/run.viewer` grants on QC. The loader and dbt
+`roles/run.invoker` and `roles/run.viewer` grants on QC. The loader, dbt and knowledge
 jobs grant job-scoped `roles/run.jobsExecutorWithOverrides` and `roles/run.viewer`
 so the workflow can pass the selected release and monitor completion.
-Its only bucket grant reads `runs/handoffs/qc/` objects. It cannot update job
+Its only bucket grant reads the `runs/handoffs/qc/`, `runs/handoffs/dbt/` and
+`runs/handoffs/knowledge/` prefixes. It cannot update job
 definitions, change their container images, write bucket objects or access
 BigQuery directly. Each job retains its separate data-access service account.
 
 Connector timeouts are 2,100 seconds for QC and loading, and 2,700 seconds for
-dbt, allowing two possible task attempts plus startup time. There is no explicit
+dbt, plus 3,900 seconds for knowledge, allowing two possible task attempts plus startup time. There is no explicit
 workflow retry policy around starting jobs. Cloud Run handles each configured single task
 retry. Workflow timeout does not itself cancel an already running Cloud Run
 execution; inspect execution names and platform logs after failures.
@@ -33,7 +36,7 @@ gcloud.cmd workflows run pbmc-qc-workflow `
   --location=europe-west1
 ```
 
-Confirm the workflow reaches `SUCCEEDED`, then inspect all three execution names
+Confirm the workflow reaches `SUCCEEDED`, then inspect all four execution names
 returned with the release ID, analytics dataset and receipt generation. For a matching published release, QC's structured
 `cloud_qc_run` log and GCS audit should show `qc_reused`, `restored_from_cloud`
 and publication `reused` as true. The QC summary must reconcile and the object
@@ -43,7 +46,8 @@ This workflow orchestrates QC, release publication, [BigQuery loading](006-cloud
 [dbt analytics](007-cloud-dbt.md) and their run audits. The
 [failure/retry drills and recovery runbook](009-pipeline-operations.md) complete
 the four Stage 4 automation substeps.
-OKF generation and the scientist assistant remain subsequent portfolio stages.
+[Cloud knowledge automation](014-cloud-knowledge.md) adds the Stage 5 knowledge
+worker and execution receipts. The scientist assistant remains a later stage.
 
 ## Historical QC-only baseline verification
 

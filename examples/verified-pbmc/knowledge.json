@@ -1,0 +1,109 @@
+{
+  "dataset": {
+    "attribution": "10x Genomics",
+    "donor_count": 1,
+    "evidence_refs": [
+      "release"
+    ],
+    "license": "CC-BY-4.0",
+    "organism": "Homo sapiens",
+    "original_source_url": "https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0",
+    "reference_genome": "hg19",
+    "source_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "source_url": "https://falexwolf.de/data/pbmc3k_raw.h5ad",
+    "tissue": "blood"
+  },
+  "dbt": {
+    "evidence_refs": [
+      "dbt_audit",
+      "dbt_manifest",
+      "dbt_results"
+    ],
+    "invocation_id": "0a06c1ba-1d1a-42e1-b102-94e6bfd8ecf6",
+    "models_succeeded": 6,
+    "status": "success",
+    "tests_passed": 30
+  },
+  "evidence": {
+    "dataset_qc": {
+      "kind": "bigquery_table",
+      "table_id": "pbmc-okf-portfolio.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_dataset_qc"
+    },
+    "dbt_audit": {
+      "kind": "dbt_audit",
+      "sha256": "18ead3e311cb106047721ee56bdc2783c2e7bc7d6de009add9bebbaa12f1f7d0",
+      "uri": "gs://pbmc-okf-portfolio-data/runs/cloud_dbt/e6a7f3d6f4194586b66399a763925cd1.json"
+    },
+    "dbt_manifest": {
+      "kind": "dbt_manifest",
+      "sha256": "940392b63eb4fb686485b08b19e0b9e7c46a86f098d886c1ff1795bb6171ba0f",
+      "uri": "gs://pbmc-okf-portfolio-data/runs/dbt/e6a7f3d6f4194586b66399a763925cd1/manifest.json"
+    },
+    "dbt_results": {
+      "kind": "dbt_run_results",
+      "sha256": "4e780980383623d4bcabbf95c87fa76a6153ea6d029db5a8ba1a0cea6f1ec3ae",
+      "uri": "gs://pbmc-okf-portfolio-data/runs/dbt/e6a7f3d6f4194586b66399a763925cd1/run_results.json"
+    },
+    "qc_exclusions": {
+      "kind": "bigquery_table",
+      "table_id": "pbmc-okf-portfolio.pbmc_analytics_r_71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d.mart_qc_exclusions"
+    },
+    "release": {
+      "kind": "release_manifest",
+      "sha256": "a9aed764e4b3029b14d355fcea636103a415197ba9fffe1e870205c43d9aa746",
+      "uri": "gs://pbmc-okf-portfolio-data/processed/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/release.json"
+    }
+  },
+  "format_name": "pbmc-project-knowledge",
+  "identity": {
+    "dataset_id": "10x_pbmc3k",
+    "dataset_version": "cellranger-1.1.0-hg19-scanpy-v1",
+    "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d"
+  },
+  "limitations": [
+    "The dataset contains one healthy donor and does not support disease comparisons.",
+    "This pipeline does not infer cell types.",
+    "QC exclusion reasons can overlap; their counts must not be assumed to sum to cells_fail."
+  ],
+  "package_status": "verified",
+  "qc_policy": {
+    "evidence_refs": [
+      "release"
+    ],
+    "max_genes_exclusive": 2500,
+    "max_mito_pct_exclusive": 5.0,
+    "min_genes_inclusive": 200,
+    "mitochondrial_prefix": "MT-",
+    "policy_id": "pbmc-demo",
+    "policy_version": "1"
+  },
+  "results": {
+    "evidence_refs": [
+      "dataset_qc",
+      "release"
+    ],
+    "exclusions": {
+      "counts": {
+        "high_genes": 5,
+        "high_mito": 57,
+        "low_genes": 0,
+        "zero_counts": 0
+      },
+      "evidence_refs": [
+        "qc_exclusions",
+        "release"
+      ],
+      "reasons_may_overlap": true
+    },
+    "metrics": {
+      "cells_fail": 62,
+      "cells_pass": 2638,
+      "cells_total": 2700,
+      "features_total": 32738,
+      "mitochondrial_features": 13,
+      "qc_pass_fraction": 0.977037037037037,
+      "total_counts": 6390631
+    }
+  },
+  "schema_version": "1.0.0"
+}

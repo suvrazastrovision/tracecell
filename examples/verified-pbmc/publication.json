@@ -1,0 +1,49 @@
+{
+  "identity": {
+    "dataset_id": "10x_pbmc3k",
+    "dataset_version": "cellranger-1.1.0-hg19-scanpy-v1",
+    "dbt_invocation_id": "0a06c1ba-1d1a-42e1-b102-94e6bfd8ecf6",
+    "dbt_run_id": "e6a7f3d6f4194586b66399a763925cd1",
+    "files": {
+      "knowledge.json": {
+        "bytes": 3583,
+        "sha256": "d323a1d2c854dbf5f8c73afba56172567e8bf67a93781323c87bbc81c4698f95"
+      },
+      "report.md": {
+        "bytes": 3360,
+        "sha256": "2cb9c83c74c27e0f0eaa855e9cebeabd3fc4f802853d168e0fd6e12fcdc0d8f9"
+      },
+      "validation.json": {
+        "bytes": 5381,
+        "sha256": "283b3a34acddcb89c32fcc3e4d4a9943ae662d6012589a7063d5ed3c2f5544bc"
+      }
+    },
+    "format_name": "pbmc-project-knowledge",
+    "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+    "schema_version": "1.0.0",
+    "validation_id": "1b369acf859a47228ced5ba961ee7f30"
+  },
+  "objects": {
+    "knowledge.json": {
+      "bytes": 3583,
+      "generation": 1793822791695948,
+      "sha256": "d323a1d2c854dbf5f8c73afba56172567e8bf67a93781323c87bbc81c4698f95",
+      "uri": "gs://pbmc-okf-portfolio-data/knowledge/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f/knowledge.json"
+    },
+    "report.md": {
+      "bytes": 3360,
+      "generation": 1793822792004157,
+      "sha256": "2cb9c83c74c27e0f0eaa855e9cebeabd3fc4f802853d168e0fd6e12fcdc0d8f9",
+      "uri": "gs://pbmc-okf-portfolio-data/knowledge/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f/report.md"
+    },
+    "validation.json": {
+      "bytes": 5381,
+      "generation": 1793822792296830,
+      "sha256": "283b3a34acddcb89c32fcc3e4d4a9943ae662d6012589a7063d5ed3c2f5544bc",
+      "uri": "gs://pbmc-okf-portfolio-data/knowledge/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f/validation.json"
+    }
+  },
+  "package_id": "e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f",
+  "publication_schema_version": 1,
+  "status": "published"
+}

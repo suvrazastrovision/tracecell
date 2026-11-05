@@ -1,0 +1,9 @@
+{
+  "project": "pbmc-okf-portfolio",
+  "bucket": "pbmc-okf-portfolio-data",
+  "release_id": "71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d",
+  "package_id": "e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f",
+  "publication_uri": "gs://pbmc-okf-portfolio-data/knowledge/releases/71a4bb4d026366b644c4aaf8bd4b29d8f8f87fe1701ba2e8d6a88ba164b83f7d/e2c908da59111f5e12ebac24804e526f938802a7bbcbd6020bb7cd4cb0a2e04f/publication.json",
+  "publication_generation": 1793822792589953,
+  "publication_sha256": "c62eb3aed9169047246d0e07201b3076cf475883dd61d25d1975d87e8fd5b9c4"
+}

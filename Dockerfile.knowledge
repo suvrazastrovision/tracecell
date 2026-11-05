@@ -1,0 +1,5 @@
+# Retain the previously verified Python/dbt runtime and its installed jsonschema.
+FROM europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-warehouse@sha256:ccb29689345a600fa92123eb91363eb023c8bb4d41d474dd0417b8dd0ddc1398
+COPY --chown=app:app src/ /app/src/
+COPY --chown=app:app schemas/ /app/schemas/
+ENTRYPOINT ["python", "-m", "pbmc_platform.run_cloud_knowledge"]
