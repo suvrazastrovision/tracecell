@@ -141,7 +141,7 @@ In GitHub Actions, download the `tests-<platform>` artifact for JUnit results,
 logs, installed dependency versions and OS/architecture details. Reports are
 retained for 14 days, including on test failure. Current results come from these
 reports; historical release snapshots are not a current compatibility claim.
-The four native platform jobs passed in the [verified CI run](https://github.com/suvrazastrovision/okf_gcp/actions/runs/42281080575). Use the latest workflow results for the current commit.
+The four native platform jobs passed in the [verified CI run](https://github.com/suvrazastrovision/tracecell/actions/runs/42281080575). Use the latest workflow results for the current commit.
 
 Version-1 published reports retain their original historical wording because
 report bytes, validation receipts and publication pins are checksum-bound.

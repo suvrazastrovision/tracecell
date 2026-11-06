@@ -1,8 +1,8 @@
 ## TraceCell: scRNA-seq Knowledge Platform
 
-[![Cross-platform tests](https://github.com/suvrazastrovision/okf_gcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/okf_gcp/actions/workflows/ci.yml)
+[![Cross-platform tests](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml)
 [![Python 3.11](assets/readme/badge-python.svg)](#quick-start)
-[![Tested on Windows, Linux and macOS](assets/readme/badge-platforms.svg)](https://github.com/suvrazastrovision/okf_gcp/actions/workflows/ci.yml)
+[![Tested on Windows, Linux and macOS](assets/readme/badge-platforms.svg)](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml)
 [![License: AGPL-3.0-only](assets/readme/badge-license.svg)](LICENSE)
 
 Turn a **human or mouse single-cell RNA-seq sample** into clear quality-control
@@ -23,6 +23,10 @@ it could work alongside Terraform and dbt.
 **First release:** this is the initial research version. Further features, improvements and batch scheduler job of unified integrated omics platform will be added in future releases. Stay tuned!
 
 ## Walkthrough
+
+[![TraceCell frontend walkthrough](assets/readme/tracecell.gif)](assets/readme/tracecell.gif)
+
+[Open the walkthrough at full size](assets/readme/tracecell.gif).
 
 **Video tutorial coming soon:** As I update the features of the Omics' data platform, a step-by-step YouTube tutorial will demonstrate how to use TraceCell, from choosing a sample to exploring and comparing highly complicated multiomics' results.
 
@@ -48,8 +52,8 @@ GCP account or model API key is needed to run local QC.
 <summary><strong>Windows — PowerShell</strong></summary>
 
 ```powershell
-git clone https://github.com/suvrazastrovision/okf_gcp.git
-cd okf_gcp
+git clone https://github.com/suvrazastrovision/tracecell.git
+cd tracecell
 py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade "pip>=25.1,<27"
 .\.venv\Scripts\python.exe -m pip install --group app --group dev
@@ -65,8 +69,8 @@ $env:SCRNA_MODE = 'local'
 <summary><strong>macOS / Linux — Terminal</strong></summary>
 
 ```bash
-git clone https://github.com/suvrazastrovision/okf_gcp.git
-cd okf_gcp
+git clone https://github.com/suvrazastrovision/tracecell.git
+cd tracecell
 python3.11 -m venv .venv
 .venv/bin/python -m pip install --upgrade "pip>=25.1,<27"
 .venv/bin/python -m pip install --group app --group dev
