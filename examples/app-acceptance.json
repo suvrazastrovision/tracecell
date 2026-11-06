@@ -1,0 +1,131 @@
+{
+  "status": "local_app_and_cloud_backend_verified_firebase_login_pending",
+  "recorded_at": "2026-11-06T12:53:16.525498+00:00",
+  "project": "pbmc-okf-portfolio",
+  "image": "europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/scrna-app@sha256:6efd1b5e911954a5c98fb198e6388c79a05a220847e4c51c3acff790f1127779",
+  "ready_revision": "projects/pbmc-okf-portfolio/locations/europe-west1/services/scrna-app/revisions/scrna-app-00005-dfz",
+  "python_tests_passed": 390,
+  "ui_state_regression": "passed; file selection and species parameters remain paired",
+  "visual_browser_review": "Stopped by the user; no screenshot-based acceptance claimed.",
+  "local_http_journey": "success",
+  "real_cloud_datasets": {
+    "human_pbmc3k": {
+      "metrics": {
+        "cells_fail": 62,
+        "cells_pass": 2638,
+        "cells_total": 2700,
+        "features_total": 32738,
+        "mitochondrial_features": 13,
+        "qc_pass_fraction": 0.977037037037037,
+        "total_counts": 6390631
+      },
+      "workflow_execution": "391acc47-159c-4b63-ace8-e5ac66268488",
+      "publication": {
+        "key": "runs/f2787527523a4b8b9a6f79b4ad703088/published/publication.json",
+        "generation": "1793967746166188",
+        "sha256": "ce86686da846f3cbefa3d231dc791b9ffd095a9b097a2506712924dafd92ee5c",
+        "size": 1525
+      }
+    },
+    "mouse_brain_1k": {
+      "metrics": {
+        "cells_fail": 184,
+        "cells_pass": 1117,
+        "cells_total": 1301,
+        "features_total": 31053,
+        "mitochondrial_features": 13,
+        "qc_pass_fraction": 0.8585703305149884,
+        "total_counts": 14920640
+      },
+      "workflow_execution": "52082313-a0a6-4e67-98a0-13a14b64e95b",
+      "publication": {
+        "key": "runs/4bd9bf3b6fa34eeab44c3b3413d85c80/published/publication.json",
+        "generation": "1793968074117704",
+        "sha256": "83b3e3396f6e204b2c6db082e752dd1e3ca13d23694c5aca8093ce7f9b4bb8a0",
+        "size": 1524
+      }
+    }
+  },
+  "real_cloud_policy_comparison": {
+    "left_pass": 2638,
+    "right_pass": 2689,
+    "both_pass": 2638,
+    "only_left": 0,
+    "only_right": 51,
+    "limitation": "Technical QC comparison; does not identify a biologically optimal policy."
+  },
+  "comparison_workflow_execution": "b926f8d3-971c-49c5-a05d-109a2cdd9f93",
+  "scheduler_dispatch_http_status": 200,
+  "scheduler_cleanup_http_status": 200,
+  "schedules_restored_paused": true,
+  "partial_cleanup_retry_verified": true,
+  "accepted_datasets_preserved_after_cleanup": true,
+  "access_boundaries": {
+    "anonymous_http_status": 403,
+    "google_token_without_app_session_http_status": 401,
+    "wrong_internal_identity_http_status": 403,
+    "public_invoker": false
+  },
+  "synthetic_local_boundary": {
+    "cells": 20000,
+    "features": 40000,
+    "stored_entries": 10000000,
+    "status": "success",
+    "seconds_observed": 29.16,
+    "peak_process_tree_rss_bytes": 448634880,
+    "scope": "Local synthetic input, not a cloud capacity or cost guarantee."
+  },
+  "cloud_recovery_history": {
+    "failed_workflow_executions": [
+      "169812d2-2d87-4bc7-83f0-852ed0f29bff",
+      "29952eb7-3f51-4893-836b-e0cb19250282"
+    ],
+    "scope": "Actual deployment failures were inspected, exact guards recovered after terminal task checks, and new runs verified. Not an exhaustive production failure matrix."
+  },
+  "remaining": [
+    "Add Firebase to the existing project and enable Google sign-in.",
+    "Register/configure the Firebase web app and exact authorized hostname.",
+    "Complete owner and second-invited-user browser login/isolation acceptance before enabling the remaining users and recurring schedules.",
+    "Actual spending requires billing-export data; no money or savings claim is made."
+  ],
+  "evidence_snapshots": {
+    "cloud": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/cloud.json",
+      "sha256": "61bf4a586115d55e0ec23c2a9ef600cd60662ea26e746987431f22f166fdc109"
+    },
+    "http": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/http.json",
+      "sha256": "9d6d6ec2d14b632e02bbb8abc26fbf358e8ada86306c3d8b5faf58ef085af9ff"
+    },
+    "surface": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/surface.json",
+      "sha256": "76e29e9b78be4969130ff178fc71314e0972f7382132b499f956a9ea355c2b3d"
+    },
+    "dispatch": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/dispatch.json",
+      "sha256": "d9be51d40ff91a3974fdf08a29b9602810809001a93eccd097f2f670e3ff3d32"
+    },
+    "cleanup_scheduler": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/cleanup_scheduler.json",
+      "sha256": "49531bff3c46553a0de28f8b5e74edc2909fcb977e3f855f3c176ccac1914ec4"
+    },
+    "cleanup": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/cleanup.json",
+      "sha256": "f9c67534addddd8673960a9741568adbc092d3860613216ef8874c8ddff972b8"
+    },
+    "boundary": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/boundary.json",
+      "sha256": "4fcbe7ae8d247a6044929d7e9a2654e29bd9ec6719e9d542abb6c37aeadbd7ed"
+    },
+    "local": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/local.json",
+      "sha256": "b16a79d4c9eebc21b96ffba91ef893b396a1f39e0778e04c96cc49ba631eae8c"
+    },
+    "terraform_drift": {
+      "path": "artifacts/app-release-acceptance/20261106T125316Z/terraform-drift.txt",
+      "sha256": "27b5c00ca7c2cf2f52a1ae773a117138e639b7efd3beb04fe7a3a0879f183160"
+    }
+  },
+  "terraform_validation": "passed",
+  "terraform_drift_exit_code": 0
+}

@@ -124,7 +124,7 @@ def render_report(package):
         return rows
 
     lines = ["# PBMC knowledge report", "", f"Package status: **{package['package_status']}**.",
-             "This project-defined package is not an external OKF standard.", ""]
+             "Run Evidence is a project-defined JSON knowledge package.", ""]
     lines += fields("Identity", {"format_name": package["format_name"],
                                   "schema_version": package["schema_version"], **package["identity"]})
     for key, title in (("dataset", "Dataset"), ("qc_policy", "QC policy"), ("dbt", "dbt build")):

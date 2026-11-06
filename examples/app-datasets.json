@@ -1,0 +1,83 @@
+{
+  "human_pbmc3k": {
+    "species": "human",
+    "url": "https://falexwolf.de/data/pbmc3k_raw.h5ad",
+    "filename": "pbmc3k_raw.h5ad",
+    "expected_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "source": "https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0",
+    "tissue": "blood",
+    "reference_genome": "hg19",
+    "source_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "prepared_sha256": "89a96f1beaa2dd83a687666d3f19a4513ac27a2a2d12581fcd77afed7ea653a1",
+    "prepared_filename": "human_pbmc3k.h5ad",
+    "bytes": 5855727,
+    "cells": 2700,
+    "features": 32738,
+    "nnz": 2286884,
+    "licence": "CC-BY-4.0",
+    "conversion_runtime": {
+      "scanpy": "1.11.5",
+      "anndata": "0.12.19",
+      "h5py": "3.16.0"
+    },
+    "example_configuration": {
+      "schema_version": "2.0.0",
+      "species": "human",
+      "counts": "X",
+      "gene_ids": "gene_ids",
+      "gene_symbols": "index",
+      "mito_mode": "prefix",
+      "mito_value": "MT-",
+      "min_genes": 200,
+      "max_genes": 2500,
+      "max_mito_pct": 5.0,
+      "tissue": "blood",
+      "reference_genome": "hg19",
+      "attribution": "10x Genomics, CC BY 4.0",
+      "source": "https://www.10xgenomics.com/datasets/3-k-pbm-cs-from-a-healthy-donor-1-standard-1-1-0",
+      "single_sample": true,
+      "public_data": true
+    },
+    "policy_note": "Demonstration settings only; not a recommendation or a clinically validated policy."
+  },
+  "mouse_brain_1k": {
+    "species": "mouse",
+    "url": "https://cf.10xgenomics.com/samples/cell-exp/3.0.0/neuron_1k_v3/neuron_1k_v3_filtered_feature_bc_matrix.h5",
+    "filename": "neuron_1k_v3_filtered_feature_bc_matrix.h5",
+    "source": "https://www.10xgenomics.com/datasets/1-k-brain-cells-from-an-e-18-mouse-v-3-chemistry-3-standard-3-0-0",
+    "tissue": "embryonic brain",
+    "reference_genome": "mm10",
+    "source_sha256": "78166dda24a6103f6b690e0e5a392d89f9da429b84ee265ee4a0f4621f607695",
+    "prepared_sha256": "6abf0a1974e0678299dbfcd62ab3fafb6aa51e0788de84887d3164c8381baf0f",
+    "prepared_filename": "mouse_brain_1k.h5ad",
+    "bytes": 11829913,
+    "cells": 1301,
+    "features": 31053,
+    "nnz": 4220492,
+    "licence": "CC-BY-4.0",
+    "conversion_runtime": {
+      "scanpy": "1.11.5",
+      "anndata": "0.12.19",
+      "h5py": "3.16.0"
+    },
+    "example_configuration": {
+      "schema_version": "2.0.0",
+      "species": "mouse",
+      "counts": "X",
+      "gene_ids": "gene_ids",
+      "gene_symbols": "index",
+      "mito_mode": "prefix",
+      "mito_value": "mt-",
+      "min_genes": 200,
+      "max_genes": 10000,
+      "max_mito_pct": 20.0,
+      "tissue": "embryonic brain",
+      "reference_genome": "mm10",
+      "attribution": "10x Genomics, CC BY 4.0",
+      "source": "https://www.10xgenomics.com/datasets/1-k-brain-cells-from-an-e-18-mouse-v-3-chemistry-3-standard-3-0-0",
+      "single_sample": true,
+      "public_data": true
+    },
+    "policy_note": "Demonstration settings only; not a recommendation or a clinically validated policy."
+  }
+}

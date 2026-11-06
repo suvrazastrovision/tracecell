@@ -1,0 +1,54 @@
+main:
+  params: [args]
+  steps:
+    - identity:
+        assign:
+          - execution: $${sys.get_env("GOOGLE_CLOUD_WORKFLOW_EXECUTION_ID")}
+    - inspect_or_process:
+        switch:
+          - condition: $${args.kind == "uploads"}
+            steps:
+              - inspect:
+                  call: run_stage
+                  args:
+                    id: $${args.id}
+                    execution: $${execution}
+                    kind: uploads
+                    stage: inspect
+                  result: inspection
+              - inspected:
+                  return: $${inspection}
+    - processing:
+        for:
+          value: stage
+          in: [qc, load, dbt, knowledge]
+          steps:
+            - execute:
+                call: run_stage
+                args:
+                  id: $${args.id}
+                  execution: $${execution}
+                  kind: runs
+                  stage: $${stage}
+                result: result
+    - complete:
+        return:
+          status: success
+          run_id: $${args.id}
+run_stage:
+  params: [id, execution, kind, stage]
+  steps:
+    - run:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: $${"namespaces/${project}/jobs/scrna-app-" + stage}
+          location: europe-west1
+          body:
+            overrides:
+              containerOverrides:
+                - args: ["--kind", "$${kind}", "--id", "$${id}", "--execution", "$${execution}", "--stage", "$${stage}"]
+          connector_params:
+            timeout: 2100
+        result: result
+    - complete:
+        return: $${result.metadata.name}

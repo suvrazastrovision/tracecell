@@ -40,7 +40,7 @@ flowchart TD
         Dbt --> Analytics["BigQuery release-specific analytics: staging, QC summary, exclusions and passing cohort"]
         Dbt --> DbtEvidence["GCS dbt artifacts, audit and execution-specific receipt"]
         DbtEvidence --> Handoff["Verify successful dbt execution, invocation and receipt generation"]
-        Handoff --> Knowledge["4. pbmc-knowledge-build: generate draft OKF"]
+        Handoff --> Knowledge["4. pbmc-knowledge-build: generate draft Run Evidence"]
         Analytics --> Knowledge
         Knowledge --> Validate["Independently validate schema, source counts, raw rows, analytics and exact cohort"]
         Release -.-> Validate
@@ -88,7 +88,7 @@ reporter are ready, but actual cost records are still pending.
 | 5. Publish knowledge | Independently check results against source data, then publish JSON facts, a report and validation evidence. | Cloud Run Job, Cloud Storage |
 | 6. Answer questions | Serve a selected verified package and show the evidence behind supported answers. | Local Python app or authenticated Cloud Run service |
 
-**OKF** is this project's name for its versioned JSON knowledge package. It
+**Run Evidence** is this project's versioned JSON knowledge package. It
 contains facts, source references and limitations; it is not an external standard.
 The assistant uses fixed rules, without a language model. New publications require
 a separate assistant build and deployment before they change its answers.
@@ -172,3 +172,10 @@ and private failure-alert delivery were verified. Actual cost reporting awaits
 billing-export records, so no actual spend or savings figure is claimed.
 
 Detailed working notes in `docs/` are kept locally and ignored by Git.
+
+## Human and mouse upload application
+
+The new [TraceCell pilot](APP.md) adds `.h5ad` uploads, configurable QC, processing
+status, verified results and policy comparisons. Run it locally on port **8767**;
+the existing archived assistant remains on **8765**. Real human/mouse cloud processing and policy comparison are verified. Hosted
+access remains gated on Firebase/Google sign-in setup and invited-user checks.
