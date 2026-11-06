@@ -99,6 +99,31 @@ The default local port is **8768**. If startup reports `Errno 10048` or
 another port and update both `PORT` and `SCRNA_ORIGIN` to match. See
 [local port configuration](APP.md#local-port-configuration) for commands.
 
+### Optional .env configuration
+
+For the answering model, copy [`.env.example`](.env.example) to `.env` in the
+repository root. These commands preserve an existing `.env`:
+
+```powershell
+# Windows PowerShell
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+```bash
+# macOS / Linux
+[ -f .env ] || cp .env.example .env
+```
+
+The default `SCRNA_LLM_PROVIDER=disabled` needs no key. To enable OpenAI, edit
+`.env` and set the provider to `openai`, the model to `gpt-5-nano`, and
+`OPENAI_API_KEY` to your own key; calls may incur charges. For Ollama, set the
+provider to `ollama` and model to `qwen2.5:3b`, then install and run that model
+locally. See the [model setup guide](APP.md#run-evidence-questions-and-research-paper-references).
+Refresh the browser after editing; terminal variables override `.env` values.
+Only model settings are read from `.env`; keep runtime settings such as `PORT`
+and `SCRNA_ORIGIN` in the terminal commands above. Your `.env` is Git-ignored;
+never commit keys or share it.
+
 ## Technology at a glance
 
 | Component | Technology | Purpose |
