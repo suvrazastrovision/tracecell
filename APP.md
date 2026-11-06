@@ -13,6 +13,7 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade "pip>=25.1,<27"
 .\.venv\Scripts\python.exe -m pip install --group app --group dev
 $env:PYTHONPATH = 'src'
+$env:SCRNA_MODE = 'local'
 .\.venv\Scripts\python.exe -m ops.prepare_app_examples
 .\.venv\Scripts\python.exe -m pbmc_platform.app.web
 ```
@@ -163,7 +164,7 @@ Pause/resume admissions with the same module's `pause` and `resume` actions.
 ## Checks
 
 For the current full test suite, all four interface checks and the native
-Windows/Linux/macOS CI matrix, see [Tests and CI](README.md#tests-and-ci).
+Windows/Linux/macOS CI matrix, see [Tests and CI](OPERATIONS.md#tests-and-ci).
 The acceptance figures below describe the recorded release snapshot.
 
 ```powershell
@@ -321,5 +322,5 @@ docker build --target app -t tracecell-app .
 
 This image is configured for the cloud runtime; use the Python command above for
 local development. Private parent images require Artifact Registry authentication.
-See [container builds](README.md#container-builds) for all targets and drill builds.
+See [container builds](OPERATIONS.md#container-builds) for all targets and drill builds.
 Building does not push or deploy the image.

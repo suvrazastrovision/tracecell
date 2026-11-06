@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="1008pt" height="792pt" viewBox="0 0 1008 792" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <title>TraceCell data pipeline</title>
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:title>TraceCell data pipeline</dc:title>
+    <dc:date>2026-11-06T21:42:57.127224</dc:date>
+    <dc:description>Input inspection, QC, SQL checks, independent verification and results in local or GCP runtimes.</dc:description>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.11.2, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 792 
+L 1008 792 
+L 1008 0 
+L 0 0 
+z
+" style="fill: #f8fafc"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 37.08 99.72 
+L 315.72 99.72 
+Q 325.08 99.72 325.08 109.08 
+L 325.08 177.48 
+Q 325.08 186.84 315.72 186.84 
+L 37.08 186.84 
+Q 27.72 186.84 27.72 177.48 
+L 27.72 109.08 
+Q 27.72 99.72 37.08 99.72 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 364.68 99.72 
+L 643.32 99.72 
+Q 652.68 99.72 652.68 109.08 
+L 652.68 177.48 
+Q 652.68 186.84 643.32 186.84 
+L 364.68 186.84 
+Q 355.32 186.84 355.32 177.48 
+L 355.32 109.08 
+Q 355.32 99.72 364.68 99.72 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 692.28 99.72 
+L 970.92 99.72 
+Q 980.28 99.72 980.28 109.08 
+L 980.28 177.48 
+Q 980.28 186.84 970.92 186.84 
+L 692.28 186.84 
+Q 682.92 186.84 682.92 177.48 
+L 682.92 109.08 
+Q 682.92 99.72 692.28 99.72 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #eff6ff; stroke: #93c5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 327.440391 143.28 
+Q 339.840771 143.28 350.452298 143.28 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 343.652298 139.88 
+L 350.452298 143.28 
+L 343.652298 146.68 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 655.040391 143.28 
+Q 667.440771 143.28 678.052298 143.28 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 671.252298 139.88 
+L 678.052298 143.28 
+L 671.252298 146.68 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 116.64 221.598369 
+Q 116.64 247.679191 116.64 271.971159 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 120.04 265.171159 
+L 116.64 271.971159 
+L 113.24 265.171159 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 37.08 276.84 
+L 190.44 276.84 
+Q 199.8 276.84 199.8 286.2 
+L 199.8 374.04 
+Q 199.8 383.4 190.44 383.4 
+L 37.08 383.4 
+Q 27.72 383.4 27.72 374.04 
+L 27.72 286.2 
+Q 27.72 276.84 37.08 276.84 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_9">
+    <path d="M 202.16127 330.48 
+Q 210.962994 330.48 217.975865 330.48 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 211.175865 327.08 
+L 217.975865 330.48 
+L 211.175865 333.88 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_10">
+    <path d="M 232.2 276.84 
+L 385.56 276.84 
+Q 394.92 276.84 394.92 286.2 
+L 394.92 374.04 
+Q 394.92 383.4 385.56 383.4 
+L 232.2 383.4 
+Q 222.84 383.4 222.84 374.04 
+L 222.84 286.2 
+Q 222.84 276.84 232.2 276.84 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_11">
+    <path d="M 397.28127 330.48 
+Q 406.082994 330.48 413.095865 330.48 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 406.295865 327.08 
+L 413.095865 330.48 
+L 406.295865 333.88 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_12">
+    <path d="M 427.32 276.84 
+L 580.68 276.84 
+Q 590.04 276.84 590.04 286.2 
+L 590.04 374.04 
+Q 590.04 383.4 580.68 383.4 
+L 427.32 383.4 
+Q 417.96 383.4 417.96 374.04 
+L 417.96 286.2 
+Q 417.96 276.84 427.32 276.84 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_13">
+    <path d="M 592.40127 330.48 
+Q 601.202994 330.48 608.215865 330.48 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 601.415865 327.08 
+L 608.215865 330.48 
+L 601.415865 333.88 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_14">
+    <path d="M 622.44 276.84 
+L 775.8 276.84 
+Q 785.16 276.84 785.16 286.2 
+L 785.16 374.04 
+Q 785.16 383.4 775.8 383.4 
+L 622.44 383.4 
+Q 613.08 383.4 613.08 374.04 
+L 613.08 286.2 
+Q 613.08 276.84 622.44 276.84 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_15">
+    <path d="M 787.52127 330.48 
+Q 796.322994 330.48 803.335865 330.48 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 796.535865 327.08 
+L 803.335865 330.48 
+L 796.535865 333.88 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_16">
+    <path d="M 817.56 276.84 
+L 970.92 276.84 
+Q 980.28 276.84 980.28 286.2 
+L 980.28 374.04 
+Q 980.28 383.4 970.92 383.4 
+L 817.56 383.4 
+Q 808.2 383.4 808.2 374.04 
+L 808.2 286.2 
+Q 808.2 276.84 817.56 276.84 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #f5f3ff; stroke: #c4b5fd; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_17">
+    <path d="M 504 408.079336 
+Q 504 421.917873 504 433.967556 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 507.4 427.167556 
+L 504 433.967556 
+L 500.6 427.167556 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #64748b; stroke: #64748b; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="patch_18">
+    <path d="M 37.08 439.56 
+L 970.92 439.56 
+Q 980.28 439.56 980.28 448.92 
+L 980.28 528.12 
+Q 980.28 537.48 970.92 537.48 
+L 37.08 537.48 
+Q 27.72 537.48 27.72 528.12 
+L 27.72 448.92 
+Q 27.72 439.56 37.08 439.56 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #ecfdf5; stroke: #6ee7b7; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_19">
+    <path d="M 37.08 598.68 
+L 481.32 598.68 
+Q 490.68 598.68 490.68 608.04 
+L 490.68 703.8 
+Q 490.68 713.16 481.32 713.16 
+L 37.08 713.16 
+Q 27.72 713.16 27.72 703.8 
+L 27.72 608.04 
+Q 27.72 598.68 37.08 598.68 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #ffffff; stroke: #99f6e4; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_20">
+    <path d="M 526.68 598.68 
+L 970.92 598.68 
+Q 980.28 598.68 980.28 608.04 
+L 980.28 703.8 
+Q 980.28 713.16 970.92 713.16 
+L 526.68 713.16 
+Q 517.32 713.16 517.32 703.8 
+L 517.32 608.04 
+Q 517.32 598.68 526.68 598.68 
+z
+" clip-path="url(#pc4c336f162)" style="fill: #ffffff; stroke: #99f6e4; stroke-width: 1.3; stroke-linejoin: miter"/>
+   </g>
+   <g id="line2d_1">
+    <path d="M 831.6 187.2 
+L 831.6 219.6 
+L 116.64 219.6 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: square"/>
+   </g>
+   <g id="line2d_2">
+    <path d="M 894.24 383.76 
+L 894.24 406.08 
+L 504 406.08 
+" clip-path="url(#pc4c336f162)" style="fill: none; stroke: #64748b; stroke-width: 1.6; stroke-linecap: square"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 28px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #0f172a" x="28.8" y="41.39875" transform="rotate(-0 28.8 41.39875)">TraceCell</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: end; fill: #0f766e" x="979.2" y="35.71125" transform="rotate(-0 979.2 35.71125)">scRNA-seq knowledge platform</text>
+   </g>
+   <g id="text_3">
+    <text style="font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #475569" x="28.8" y="66.947188" transform="rotate(-0 28.8 66.947188)">Public human or mouse counts → explicit quality rules → results with evidence</text>
+   </g>
+   <g id="text_4">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="176.4" y="128.59125" transform="rotate(-0 176.4 128.59125)">1  Choose a sample</text>
+   </g>
+   <g id="text_5">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(72.089062 153.630312)">Upload .h5ad or use a public example</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(77.77125 170.680313)">Sparse, original counts; one sample</text>
+   </g>
+   <g id="text_6">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="504" y="128.59125" transform="rotate(-0 504 128.59125)">2  Inspect the file</text>
+   </g>
+   <g id="text_7">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(385.621094 154.134766)">Check dimensions, counts and annotations</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(416.309375 170.680313)">Identify available gene columns</text>
+   </g>
+   <g id="text_8">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="831.6" y="129.75375" transform="rotate(-0 831.6 129.75375)">3  Review and submit</text>
+   </g>
+   <g id="text_9">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(719.768672 153.630312)">Confirm species, mappings and QC rules</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(727.501328 170.680313)">Save a fixed configuration for this run</text>
+   </g>
+   <g id="text_10">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #5b21b6" x="504" y="249.952344" transform="rotate(-0 504 249.952344)">PROCESSING  ·  progress and stage status are visible in the app</text>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="113.76" y="305.715094" transform="rotate(-0 113.76 305.715094)">QC metrics</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(58.361672 341.069187)">Counts, genes, mito %</text>
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(54.539672 356.823453)">Pass / exclusion reasons</text>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="308.88" y="306.426375" transform="rotate(-0 308.88 306.426375)">Load tables</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(249.835 341.069187)">Cell and gene metadata</text>
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(261.369906 356.259187)">Matrix stays in files</text>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="504" y="305.337938" transform="rotate(-0 504 305.337938)">dbt analytics</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(470.258906 341.456594)">6 SQL models</text>
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(471.650813 357.208562)">30 data tests</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="699.12" y="305.337938" transform="rotate(-0 699.12 305.337938)">Verify independently</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(642.694969 341.069187)">Source, rows, analytics</text>
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(642.001312 356.259187)">and exact passing cells</text>
+   </g>
+   <g id="text_19">
+    <text style="font-weight: 700; font-size: 10.8px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="894.24" y="306.426375" transform="rotate(-0 894.24 306.426375)">Publish evidence</text>
+   </g>
+   <g id="text_20">
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(839.865312 342.018562)">Checksummed results</text>
+    <text style="font-size: 9.8px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(836.740031 356.259187)">Completion marker last</text>
+   </g>
+   <g id="text_21">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="504" y="468.43125" transform="rotate(-0 504 468.43125)">4  Explore, download and compare</text>
+   </g>
+   <g id="text_22">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(248.610938 498.870313)">Four QC plots · PNG / JPEG / PDF · report and Run Evidence · same-sample policy comparison</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(257.636953 515.920313)">Paper QC rules need review and confirmation; an optional model answers cited questions</text>
+   </g>
+   <g id="text_23">
+    <text style="font-weight: 700; font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f766e" x="504" y="576.420859" transform="rotate(-0 504 576.420859)">SAME SCIENTIFIC CHECKS, TWO RUNTIMES</text>
+   </g>
+   <g id="text_24">
+    <text style="font-weight: 700; font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="259.2" y="628.527344" transform="rotate(-0 259.2 628.527344)">Local  ·  no GCP account needed</text>
+   </g>
+   <g id="text_25">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(126.202734 658.382344)">Python serves the browser UI and FastAPI backend</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(126.635039 674.657344)">SQLite: run history  ·  local files: inputs and results</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(131.83582 691.347422)">DuckDB + dbt: metadata tables and SQL checks</text>
+   </g>
+   <g id="text_26">
+    <text style="font-weight: 700; font-size: 11.5px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #0f172a" x="748.8" y="627.368359" transform="rotate(-0 748.8 627.368359)">GCP deployment  ·  project owner pays</text>
+   </g>
+   <g id="text_27">
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(643.261875 658.382344)">Cloud Run Jobs + Workflows: processing</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(629.049141 674.657344)">Firestore: run state  ·  GCS: inputs and results</text>
+    <text style="font-size: 10.5px; font-family: 'DejaVu Sans'; fill: #475569" transform="translate(618.027422 690.932344)">BigQuery + dbt: metadata tables and SQL checks</text>
+   </g>
+   <g id="text_28">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #475569" x="504" y="748.235312" transform="rotate(-0 504 748.235312)">Cloud support: Terraform / IAM · Artifact Registry · Logging / Monitoring</text>
+   </g>
+   <g id="text_29">
+    <text style="font-size: 10px; font-family: 'DejaVu Sans'; text-anchor: middle; fill: #64748b" x="504" y="776.759375" transform="rotate(-0 504 776.759375)">Research QC pilot. No clinical interpretation or cell-type inference.</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="pc4c336f162">
+   <rect x="0" y="0" width="1008" height="792"/>
+  </clipPath>
+ </defs>
+</svg>
