@@ -24,10 +24,7 @@ it could work alongside Terraform and dbt.
 
 ## Walkthrough
 
-![Animated walkthrough of the TraceCell application](assets/readme/tracecell.gif)
-
-**Video tutorial coming soon:** a step-by-step YouTube tutorial will demonstrate
-how to use TraceCell, from choosing a sample to exploring and comparing results.
+**Video tutorial coming soon:** As I update the features of the Omics' data platform, a step-by-step YouTube tutorial will demonstrate how to use TraceCell, from choosing a sample to exploring and comparing highly complicated multiomics' results.
 
 1. **Choose a sample:** use the human PBMC or mouse brain example to load its file
    and settings automatically, or upload your own `.h5ad`.
@@ -87,20 +84,6 @@ Keep the terminal running; press **Ctrl+C** to stop.
 To restart, open the repo folder, set `PYTHONPATH` and `SCRNA_MODE` as above,
 then run the final server command. Installation and example preparation are
 one-time setup steps.
-
-## Technology at a glance
-
-| Component | Technology | Purpose |
-| --- | --- | --- |
-| Frontend | HTML, CSS, JavaScript | Sample upload, QC settings, progress, plots and comparisons. |
-| Backend | Python 3.11, FastAPI, Uvicorn | APIs, validation, processing coordination and result access; Swagger at `/docs`. |
-| Scientific processing | Scanpy, AnnData, NumPy, SciPy, Matplotlib | Read count matrices, calculate QC and generate plots. |
-| Analytics | dbt with DuckDB locally or BigQuery on GCP | Build SQL models and test metadata and QC summaries. |
-| Storage | Local files + SQLite; GCS + Firestore on GCP | Store inputs, results, run history and processing state. |
-| Answering model (optional) | OpenAI `gpt-5-nano` or Ollama `qwen2.5:3b` defaults | Cited questions and draft paper QC rules; requires separate configuration. Without a model, verified evidence lookup still works. |
-| Cloud execution | Cloud Run Jobs, Workflows, Cloud Scheduler | Run, coordinate and schedule cloud processing. |
-| Infrastructure | Terraform, Docker, Artifact Registry | Define cloud resources and permissions; build and store container images. |
-| Testing | pytest, JavaScript checks, GitHub Actions | Check behavior on Windows, Linux and both Mac architectures. |
 
 ## Complete data pipeline
 
