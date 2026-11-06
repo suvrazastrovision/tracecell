@@ -11,6 +11,10 @@ settings on the same sample, see why cells were excluded, and compare supported
 QC rules with a research paper. Source links and recorded settings help colleagues
 review and reproduce each decision.
 
+**Designed and developed by Suvra Nath.**
+
+**First release:** this is the initial research version. Further features and improvements will be added in future releases.
+
 ## Walkthrough
 
 1. **Choose a sample:** use the human PBMC or mouse brain example to load its file
@@ -72,15 +76,88 @@ To restart, open the repo folder, set `PYTHONPATH` and `SCRNA_MODE` as above,
 then run the final server command. Installation and example preparation are
 one-time setup steps.
 
-## Data pipeline
+## Complete data pipeline
 
-[![TraceCell pipeline: input inspection, QC, SQL checks, independent validation and verified results, with local and GCP runtimes](assets/readme/pipeline.svg)](assets/readme/pipeline.svg?raw=true)
+### TraceCell upload app
 
-**[Open the full-size diagram](assets/readme/pipeline.svg?raw=true)** to zoom:
-use **Ctrl + / −** on Windows/Linux or **Cmd + / −** on macOS; **0** with the
-same modifier resets the view. Download the SVG if your preview limits zoom.
-The [complete scheduled PBMC cloud pipeline](OPERATIONS.md#complete-data-pipeline)
-is documented separately.
+Upload `.h5ad` ? inspect counts and gene annotations ? confirm QC rules ?
+calculate QC ? load metadata ? run dbt models and tests ? independently verify
+results ? publish Run Evidence ? explore plots, downloads and comparisons.
+
+Locally, this uses SQLite, files and DuckDB. The GCP runtime uses Firestore,
+Cloud Storage, Cloud Run Jobs, Workflows and BigQuery. The expression matrix
+stays in files; BigQuery holds metadata and summaries.
+
+[![TraceCell app processing stages and local/GCP runtimes](assets/readme/pipeline.svg)](assets/readme/pipeline.svg?raw=true)
+
+[Open the app pipeline full-size](assets/readme/pipeline.svg?raw=true).
+Use **Ctrl + / -** (Windows/Linux) or **Cmd + / -** (macOS) to zoom in and out.
+
+### Scheduled PBMC pipeline on GCP
+
+This is the complete implemented cloud pipeline, including orchestration,
+execution receipts, independent validation, publication and failure recovery.
+It is separate from the interactive upload app above. Solid arrows show data
+and processing; dotted arrows show coordination and supporting services.
+
+```mermaid
+flowchart TD
+    subgraph Control["Start and coordinate"]
+        Schedule["Cloud Scheduler: Monday 09:00 Europe/Berlin"] --> Workflow["Workflows: pbmc-qc-workflow"]
+        Manual["Manual trigger"] --> Workflow
+        Workflow --> Lock{"Acquire GCS lock"}
+        Lock -->|Already held| Skip["Skip overlapping run"]
+    end
+
+    subgraph Processing["Four sequential Cloud Run Jobs"]
+        Source["Public PBMC3k .h5ad: unnormalized counts"] --> QC["1. pbmc-qc: download, checksum and cell quality checks"]
+        Config["Dataset identity and recorded QC policy"] -.-> QC
+        QC --> Release["GCS committed release: counts.h5ad, cell and gene Parquet, summary and manifest"]
+        Release --> QCReceipt["Execution-specific QC receipt: verify release and object generation"]
+        QCReceipt --> Load["2. pbmc-warehouse-load: validate, load or reuse matching tables"]
+        Load --> Raw["BigQuery pbmc_raw: release-specific cells, genes and summary"]
+        Raw --> Dbt["3. pbmc-dbt-build: build six models and run 30 data tests"]
+        Dbt --> Analytics["BigQuery release-specific analytics: staging, QC summary, exclusions and passing cohort"]
+        Dbt --> DbtEvidence["GCS dbt artifacts, audit and execution-specific receipt"]
+        DbtEvidence --> Handoff["Verify successful dbt execution, invocation and receipt generation"]
+        Handoff --> Knowledge["4. pbmc-knowledge-build: generate draft Run Evidence"]
+        Analytics --> Knowledge
+        Knowledge --> Validate["Independently validate schema, source counts, raw rows, analytics and exact cohort"]
+        Release -.-> Validate
+        Raw -.-> Validate
+        DbtEvidence -.-> Validate
+        Validate --> Publish["GCS versioned package: knowledge.json, report.md and validation.json; publication.json written last"]
+        Publish --> FinalReceipt["Verify knowledge completion receipt and publication identity"]
+    end
+
+    Lock -->|Acquired| QC
+    Workflow -.-> QCReceipt
+    Workflow -.-> Handoff
+    Workflow -.-> FinalReceipt
+    FinalReceipt --> Success["Workflow success: release exact lock generation"]
+
+    subgraph Serving["Separate assistant build and deployment"]
+        Publish --> Review["Review and pin selected publication; verify and bundle snapshot"]
+        Review --> Assistant["Authenticated Cloud Run assistant or local browser app"]
+        Assistant --> Answers["Supported questions: facts, evidence references and limitations"]
+    end
+
+    subgraph Operations["Infrastructure, failures and recovery"]
+        Terraform["Terraform: infrastructure and IAM; remote state in GCS"] -.-> Workflow
+        Images["Artifact Registry: digest-pinned container images"] -.-> QC
+        Images -.-> Load
+        Images -.-> Dbt
+        Images -.-> Knowledge
+        Workflow -.->|Pipeline failure| Retain["Retain lock; inspect owner and running tasks before recovery"]
+        Retain --> Logs["Cloud Logging and Monitoring failure policies"]
+        Schedule -.->|Delivery failure| Logs
+        Logs --> Inbox["Private Pub/Sub alert inbox"]
+    end
+```
+
+The archived PBMC assistant serves a pinned publication until rebuilt and
+redeployed. The current TraceCell app also supports optional model-backed
+questions and paper comparisons over each selected run's verified evidence.
 
 ## Before you use it
 
