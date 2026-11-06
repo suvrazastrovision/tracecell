@@ -11,7 +11,16 @@ settings on the same sample, see why cells were excluded, and compare supported
 QC rules with a research paper. Source links and recorded settings help colleagues
 review and reproduce each decision.
 
-**First release:** this is the initial research version. Further features and improvements will be added in future releases.
+TraceCell is a **scientific data platform** that connects sample processing with
+tested analytics and traceable results. **Terraform** defines the cloud
+infrastructure and access permissions, **dbt** builds and tests the SQL analytics,
+and **GCP Workflows** coordinates processing and publication. This design supports
+the current scope: analysing existing `.h5ad` count matrices within a GCP-based
+platform. **Nextflow** would be a strong option for future workflows requiring
+large parallel sequencing analyses or execution across HPC and multiple clouds;
+it could work alongside Terraform and dbt.
+
+**First release:** this is the initial research version. Further features, improvements and batch scheduler job of unified integrated omics platform will be added in future releases. Stay tuned!
 
 ## Walkthrough
 
