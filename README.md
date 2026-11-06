@@ -11,8 +11,6 @@ settings on the same sample, see why cells were excluded, and compare supported
 QC rules with a research paper. Source links and recorded settings help colleagues
 review and reproduce each decision.
 
-**Designed and developed by Suvra Nath.**
-
 **First release:** this is the initial research version. Further features and improvements will be added in future releases.
 
 ## Walkthrough
@@ -78,27 +76,10 @@ one-time setup steps.
 
 ## Complete data pipeline
 
-### TraceCell upload app
-
-Upload `.h5ad` ? inspect counts and gene annotations ? confirm QC rules ?
-calculate QC ? load metadata ? run dbt models and tests ? independently verify
-results ? publish Run Evidence ? explore plots, downloads and comparisons.
-
-Locally, this uses SQLite, files and DuckDB. The GCP runtime uses Firestore,
-Cloud Storage, Cloud Run Jobs, Workflows and BigQuery. The expression matrix
-stays in files; BigQuery holds metadata and summaries.
-
-[![TraceCell app processing stages and local/GCP runtimes](assets/readme/pipeline.svg)](assets/readme/pipeline.svg?raw=true)
-
-[Open the app pipeline full-size](assets/readme/pipeline.svg?raw=true).
-Use **Ctrl + / -** (Windows/Linux) or **Cmd + / -** (macOS) to zoom in and out.
-
-### Scheduled PBMC pipeline on GCP
-
 This is the complete implemented cloud pipeline, including orchestration,
 execution receipts, independent validation, publication and failure recovery.
-It is separate from the interactive upload app above. Solid arrows show data
-and processing; dotted arrows show coordination and supporting services.
+Solid arrows show data and processing; dotted arrows show coordination and
+supporting services. The interactive upload app is described in [APP.md](APP.md).
 
 ```mermaid
 flowchart TD
@@ -181,11 +162,13 @@ questions and paper comparisons over each selected run's verified evidence.
 - [Operations guide](OPERATIONS.md): Docker targets, dependencies, cloud pipeline and deployment notes.
 - [Tests and CI](OPERATIONS.md#tests-and-ci): local checks and Windows, Linux, Intel Mac and Apple Silicon jobs.
 
-## License
+## Licence
 
 Original project code is **AGPL-3.0-only**. Commercial use is allowed under its
 conditions, including source-sharing obligations. See [LICENSE](LICENSE) and
 [third-party notices](THIRD_PARTY_NOTICES.md) for the separate licenses of bundled
 material and example data.
 
-Copyright © 2026 suvrazastrovision and contributors.
+**Developed and designed by Suvra Nath.**
+
+Copyright © Suvra Nath, 2026.
