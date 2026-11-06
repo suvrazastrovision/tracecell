@@ -24,6 +24,11 @@ it could work alongside Terraform and dbt.
 
 ## Walkthrough
 
+![Animated walkthrough of the TraceCell application](assets/readme/tracecell.gif)
+
+**Video tutorial coming soon:** a step-by-step YouTube tutorial will demonstrate
+how to use TraceCell, from choosing a sample to exploring and comparing results.
+
 1. **Choose a sample:** use the human PBMC or mouse brain example to load its file
    and settings automatically, or upload your own `.h5ad`.
 2. **Review and run:** check the QC thresholds, confirm the settings and start.
