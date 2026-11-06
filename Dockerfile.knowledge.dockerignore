@@ -1,8 +1,0 @@
-*
-!src/
-!src/**
-!schemas/
-!schemas/**
-!Dockerfile.knowledge
-**/__pycache__
-**/*.py[cod]

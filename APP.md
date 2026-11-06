@@ -10,7 +10,8 @@ Use Python 3.11. In PowerShell, from the repository root:
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-app-dev.txt
+.\.venv\Scripts\python.exe -m pip install --upgrade "pip>=25.1,<27"
+.\.venv\Scripts\python.exe -m pip install --group app --group dev
 $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m ops.prepare_app_examples
 .\.venv\Scripts\python.exe -m pbmc_platform.app.web
@@ -161,6 +162,10 @@ Pause/resume admissions with the same module's `pause` and `resume` actions.
 
 ## Checks
 
+For the current full test suite, all four interface checks and the native
+Windows/Linux/macOS CI matrix, see [Tests and CI](README.md#tests-and-ci).
+The acceptance figures below describe the recorded release snapshot.
+
 ```powershell
 $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m pytest tests/test_app.py -q
@@ -173,7 +178,7 @@ owner sign-in and a second invited user isolation check. Billing export is still
 reporting. Resource/query limits and budget notifications are not a guaranteed
 monthly spending cap.
 
-## Accepted implementation status
+## Accepted implementation status (historical release snapshot)
 
 - **390 Python tests passed**, including malformed inputs, both species,
   idempotency, isolation, workflow-success finalization and partial cleanup retries.
@@ -305,3 +310,16 @@ as an initial guide. These are approximate ranges, not measured completion
 percentages or a processing SLA. Queued runs do not claim a completion countdown;
 blocked operations stop the animation. Overruns and delayed backend updates are
 shown explicitly, and completed runs display their actual elapsed duration.
+
+## Build the app container
+
+From the repository root, use the `app` target in the shared Dockerfile:
+
+```powershell
+docker build --target app -t tracecell-app .
+```
+
+This image is configured for the cloud runtime; use the Python command above for
+local development. Private parent images require Artifact Registry authentication.
+See [container builds](README.md#container-builds) for all targets and drill builds.
+Building does not push or deploy the image.

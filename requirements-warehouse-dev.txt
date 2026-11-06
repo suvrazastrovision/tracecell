@@ -1,2 +1,0 @@
--r requirements-warehouse.txt
-dbt-duckdb>=1.11,<1.12

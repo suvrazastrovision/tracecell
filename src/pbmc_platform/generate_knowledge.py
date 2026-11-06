@@ -123,8 +123,10 @@ def render_report(package):
             rows.extend(["Evidence: " + ", ".join(f"[{ref}](#evidence)" for ref in evidence_refs), ""])
         return rows
 
+    # Version-1 reports are checksum-bound publication artifacts. Keep their
+    # historical wording byte-compatible; current app branding is independent.
     lines = ["# PBMC knowledge report", "", f"Package status: **{package['package_status']}**.",
-             "Run Evidence is a project-defined JSON knowledge package.", ""]
+             "This project-defined package is not an external OKF standard.", ""]
     lines += fields("Identity", {"format_name": package["format_name"],
                                   "schema_version": package["schema_version"], **package["identity"]})
     for key, title in (("dataset", "Dataset"), ("qc_policy", "QC policy"), ("dbt", "dbt build")):

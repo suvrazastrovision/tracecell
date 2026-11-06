@@ -1,0 +1,127 @@
+name: Cross-platform tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  native-tests:
+    name: ${{ matrix.name }} / Python 3.11
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: windows-x64
+            os: windows-2022
+            architecture: x64
+          - name: linux-x64
+            os: ubuntu-24.04
+            architecture: x64
+          - name: macos-arm64
+            os: macos-15
+            architecture: arm64
+          - name: macos-x64
+            os: macos-15-intel
+            architecture: x64
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONPATH: src
+      PYTHONDONTWRITEBYTECODE: "1"
+      SCRNA_MODE: local
+      SCRNA_LLM_PROVIDER: disabled
+      DBT_SEND_ANONYMOUS_USAGE_STATS: "false"
+      OPENBLAS_NUM_THREADS: "1"
+      OMP_NUM_THREADS: "1"
+      MPLBACKEND: Agg
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare report directory
+        run: mkdir -p reports
+
+      - name: Set up Python
+        id: python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.11"
+          architecture: ${{ matrix.architecture }}
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Set up Node.js
+        id: node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+          architecture: ${{ matrix.architecture }}
+          package-manager-cache: false
+
+      - name: Install application and development dependencies
+        id: dependencies
+        run: |
+          python -m pip install --upgrade "pip>=25.1,<27"
+          python -m pip install --group app --group dev
+
+      - name: Record environment and dependency versions
+        if: ${{ !cancelled() && steps.python.outcome == 'success' }}
+        run: |
+          python - <<'PY'
+          import json, os, platform, shutil, subprocess, sys
+          from pathlib import Path
+          node = shutil.which("node")
+          data = {
+              "python": sys.version,
+              "platform": platform.platform(),
+              "machine": platform.machine(),
+              "runner_os": os.environ.get("RUNNER_OS"),
+              "runner_arch": os.environ.get("RUNNER_ARCH"),
+              "commit": os.environ.get("GITHUB_SHA"),
+              "node": subprocess.check_output([node, "--version"], text=True).strip() if node else None,
+              "pip": subprocess.check_output([sys.executable, "-m", "pip", "--version"], text=True).strip(),
+          }
+          Path("reports/environment.json").write_text(json.dumps(data, indent=2), encoding="utf-8")
+          print(json.dumps(data, indent=2))
+          PY
+          python -m pip freeze > reports/dependencies.txt
+
+      - name: Check installed dependencies
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: python -m pip check 2>&1 | tee reports/pip-check.log
+
+      - name: Run full Python test suite
+        if: ${{ !cancelled() && steps.dependencies.outcome == 'success' }}
+        run: python -m pytest -q --junitxml=reports/junit.xml 2>&1 | tee reports/pytest.log
+
+      # Keep the interface checks independent of the Python test result.
+      - name: Run all four JavaScript interface checks
+        if: ${{ !cancelled() && steps.node.outcome == 'success' }}
+        run: |
+          status=0
+          for script in ops/check_app_ui.cjs ops/check_app_research_ui.cjs ops/check_processing_ui.cjs ops/check_swagger_ui.cjs; do
+            node "$script" 2>&1 | tee "reports/$(basename "$script" .cjs).log" || status=1
+          done
+          exit "$status"
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: tests-${{ matrix.name }}
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 14

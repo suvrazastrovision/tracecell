@@ -1,8 +1,0 @@
-# Reuse the verified Python/scientific runtime without reinstalling dependencies.
-FROM europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-knowledge@sha256:078bb88fff58ab7147b0188e1b1be15ed10c85dceefab1adb738058ece510f95
-COPY --chown=app:app src/ /app/src/
-COPY --chown=app:app schemas/ /app/schemas/
-COPY --chown=app:app configs/assistant-package.json /app/configs/assistant-package.json
-COPY --chown=app:app examples/verified-pbmc/ /app/examples/verified-pbmc/
-EXPOSE 8080
-ENTRYPOINT ["python", "-m", "pbmc_platform.assistant_web", "--cloud-run"]

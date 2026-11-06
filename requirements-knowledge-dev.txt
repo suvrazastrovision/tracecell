@@ -1,2 +1,0 @@
--r requirements-knowledge.txt
-pytest

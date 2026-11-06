@@ -1,4 +1,0 @@
-# Preserve the verified producer's runtime and core QC code hashes. Only its
-# cloud wrapper and shared download helper change for execution-bound handoff.
-FROM europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-qc@sha256:f5eea9f5f0e0ac564c0ecedcb9e562288eec5507690828570fc065264302ae93
-COPY --chown=app:app src/pbmc_platform/run_cloud_qc.py src/pbmc_platform/cloud_release.py /app/src/pbmc_platform/

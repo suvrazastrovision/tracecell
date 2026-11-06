@@ -1,3 +1,0 @@
-FROM europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-knowledge@sha256:078bb88fff58ab7147b0188e1b1be15ed10c85dceefab1adb738058ece510f95
-COPY --chown=app:app ops/knowledge_drill_worker.py /app/ops/knowledge_drill_worker.py
-ENTRYPOINT ["python", "/app/ops/knowledge_drill_worker.py"]

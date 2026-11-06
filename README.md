@@ -93,6 +93,118 @@ contains facts, source references and limitations; it is not an external standar
 The assistant uses fixed rules, without a language model. New publications require
 a separate assistant build and deployment before they change its answers.
 
+## Python dependencies
+
+Maintain dependencies in one file: [pyproject.toml](pyproject.toml). Its groups
+include shared groups automatically, so `app` also installs the QC, warehouse
+and knowledge dependencies.
+
+| Group | Installs |
+| --- | --- |
+| `qc` | Scientific QC tools and Cloud Storage client |
+| `warehouse` | QC plus BigQuery and dbt |
+| `knowledge` | Warehouse plus JSON validation |
+| `app` | Knowledge plus web UI, authentication, plots, PDFs and model client |
+| `dev` | Testing tools and the local DuckDB dbt adapter; combine with a runtime group |
+
+From the repository root, using Python 3.11:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\python.exe -m pip install --upgrade "pip>=25.1,<27"
+.\.venv\Scripts\python.exe -m pip install --group app --group dev
+$env:PYTHONPATH = 'src'
+```
+
+For QC only, use `--group qc`; for warehouse development, use
+`--group warehouse --group dev`. These are standard pip dependency groups, not
+package extras: use `--group`, rather than `pip install ".[app]"`. Continue
+running the project from its repository root with `PYTHONPATH=src`.
+
+The original exact-version Windows/Python 3.11 snapshots are preserved in
+[locks/](locks/README.md). They describe historical QC and warehouse environments;
+they are not complete locks for the current app or Linux containers.
+
+## Tests and CI
+
+The [CI workflow](.github/workflows/ci.yml) runs on pushes, pull requests and
+manual requests. It tests Python 3.11 on Windows x64, Linux x64, macOS Apple
+Silicon and macOS Intel, and runs all four JavaScript checks with Node.js 24.
+Each platform finishes independently. No GCP or OpenAI credentials are supplied;
+cloud and model integrations use test doubles.
+
+After activating your virtual environment, run these commands from the repository
+root on any platform (Node.js 24 is needed for the JavaScript checks):
+
+```text
+python -m pip check
+python -m pytest -q
+node ops/check_app_ui.cjs
+node ops/check_app_research_ui.cjs
+node ops/check_processing_ui.cjs
+node ops/check_swagger_ui.cjs
+```
+
+Activate with `.\.venv\Scripts\Activate.ps1` in Windows PowerShell, or
+`source .venv/bin/activate` on Linux/macOS. Install the `app` and `dev` dependency
+groups first, as described above.
+
+In GitHub Actions, download the `tests-<platform>` artifact for JUnit results,
+logs, installed dependency versions and OS/architecture details. Reports are
+retained for 14 days, including on test failure. Current results come from these
+reports; historical release snapshots are not a current compatibility claim.
+macOS remains unverified until both native Mac jobs actually pass on GitHub.
+
+Version-1 published reports retain their original historical wording because
+report bytes, validation receipts and publication pins are checksum-bound.
+The current app and documentation call the knowledge package **Run Evidence**.
+
+## Container builds
+
+All components use the root [Dockerfile](Dockerfile). Choose a build target;
+without `--target`, Docker builds the original `qc` worker.
+
+| Target | Purpose |
+| --- | --- |
+| `qc` | Original quality-control worker (default) |
+| `qc-workflow` | QC worker with cloud workflow handoff |
+| `warehouse` | Warehouse loader and dbt runtime |
+| `knowledge` | Generate and verify Run Evidence |
+| `assistant` | Archived assistant with its pinned example package |
+| `app` | Current TraceCell web app and app worker runtime |
+| `drills` | Isolated QC or warehouse recovery testing |
+| `knowledge-drills` | Isolated knowledge-publication recovery testing |
+
+From the repository root:
+
+```powershell
+docker build --target app -t tracecell-app .
+docker build --target warehouse -t tracecell-warehouse .
+docker build --target knowledge -t tracecell-knowledge .
+```
+
+The `qc`, `warehouse` and `app` targets install groups from `pyproject.toml`.
+Other targets retain their verified parent-image dependencies; changing those
+requires rebuilding and re-pinning the corresponding parent runtime.
+
+Some targets reuse private, digest-pinned Artifact Registry images. Authenticate
+Docker for `europe-west1-docker.pkg.dev` before building those targets:
+
+```powershell
+gcloud auth configure-docker europe-west1-docker.pkg.dev
+```
+
+The `drills` target defaults to the existing pinned QC parent. To test warehouse
+or dbt recovery, supply the pinned warehouse parent explicitly:
+
+```powershell
+docker build --target drills --build-arg WORKER_IMAGE=europe-west1-docker.pkg.dev/pbmc-okf-portfolio/pbmc-containers/pbmc-warehouse@sha256:ccb29689345a600fa92123eb91363eb023c8bb4d41d474dd0417b8dd0ddc1398 -t tracecell-drills-warehouse .
+```
+
+The root `.dockerignore` allows only required source, configuration and example
+references. Drill scripts are copied only into drill targets. Images run as the
+non-root `app` user. Building an image does not deploy it or change cloud jobs.
+
 ## How the cloud pipeline is managed
 
 - **Workflows** runs four jobs in order: QC, loading, dbt and knowledge. It checks
@@ -113,7 +225,8 @@ for the bundled assistant demo.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements-knowledge.txt
+.\.venv\Scripts\python.exe -m pip install --upgrade "pip>=25.1,<27"
+.\.venv\Scripts\python.exe -m pip install --group knowledge
 $env:PYTHONPATH = 'src'
 .\.venv\Scripts\python.exe -m pbmc_platform.assistant_web
 ```
