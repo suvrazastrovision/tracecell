@@ -1,6 +1,6 @@
 const assert=require('assert'),fs=require('fs'),vm=require('vm');
 let ready,config;
-const context={window:{location:{href:'http://127.0.0.1:8767/docs',origin:'http://127.0.0.1:8767'},addEventListener:(_,fn)=>{ready=fn;}},
+const context={window:{location:{href:'http://127.0.0.1:8768/docs',origin:'http://127.0.0.1:8768'},addEventListener:(_,fn)=>{ready=fn;}},
  document:{cookie:'csrf=unit-test-token'},URL,SwaggerUIBundle:options=>{config=options;return {};}};
 vm.runInNewContext(fs.readFileSync('src/pbmc_platform/app/static/api-docs.js','utf8'),context);
 ready();assert.equal(config.url,'/openapi.json');assert.equal(config.validatorUrl,null);

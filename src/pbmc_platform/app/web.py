@@ -21,6 +21,7 @@ from .store import LocalStore, FirestoreStore
 from .worker import object_read, read_package
 
 ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_PORT = 8768
 LOCAL_PROCESS = None
 LOCAL_MUTEX = threading.Lock()
 
@@ -54,7 +55,7 @@ def create_app(service=None, local=None):
     allowed = {x.strip() for x in allowed if x.strip()}
     if not local and not 0 < len(allowed) <= 5:
         raise RuntimeError('Cloud mode requires one to five invited email addresses')
-    origin = os.getenv('SCRNA_ORIGIN', 'http://127.0.0.1:8767').rstrip('/')
+    origin = os.getenv('SCRNA_ORIGIN', f"http://127.0.0.1:{os.getenv('PORT', str(DEFAULT_PORT))}").rstrip('/')
     from urllib.parse import urlsplit
     app.add_middleware(TrustedHostMiddleware, allowed_hosts=['127.0.0.1', 'localhost', 'testserver'] if local else [urlsplit(origin).hostname])
     app.mount('/static', StaticFiles(directory=Path(__file__).parent / 'static'), name='static')
@@ -428,7 +429,7 @@ def create_app(service=None, local=None):
 def main():
     import uvicorn
     cloud = os.getenv('SCRNA_MODE') == 'cloud'
-    uvicorn.run(create_app(), host='0.0.0.0' if cloud else '127.0.0.1', port=int(os.getenv('PORT', '8767')))
+    uvicorn.run(create_app(), host='0.0.0.0' if cloud else '127.0.0.1', port=int(os.getenv('PORT', str(DEFAULT_PORT))))
 
 
 if __name__ == '__main__':

@@ -60,6 +60,8 @@ py -3.11 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --group app --group dev
 $env:PYTHONPATH = 'src'
 $env:SCRNA_MODE = 'local'
+$env:PORT = '8768'
+$env:SCRNA_ORIGIN = 'http://127.0.0.1:8768'
 .\.venv\Scripts\python.exe -m ops.prepare_app_examples
 .\.venv\Scripts\python.exe -m pbmc_platform.app.web
 ```
@@ -77,18 +79,25 @@ python3.11 -m venv .venv
 .venv/bin/python -m pip install --group app --group dev
 export PYTHONPATH=src
 export SCRNA_MODE=local
+export PORT=8768
+export SCRNA_ORIGIN=http://127.0.0.1:8768
 .venv/bin/python -m ops.prepare_app_examples
 .venv/bin/python -m pbmc_platform.app.web
 ```
 
 </details>
 
-Open the **[frontend](http://127.0.0.1:8767)** or explore the
-**[backend API in Swagger](http://127.0.0.1:8767/docs)**.
+Open the **[frontend](http://127.0.0.1:8768)** or explore the
+**[backend API in Swagger](http://127.0.0.1:8768/docs)**.
 Keep the terminal running; press **Ctrl+C** to stop.
-To restart, open the repo folder, set `PYTHONPATH` and `SCRNA_MODE` as above,
-then run the final server command. Installation and example preparation are
-one-time setup steps.
+To restart, open the repo folder, set `PYTHONPATH`, `SCRNA_MODE`, `PORT` and
+`SCRNA_ORIGIN` as above, then run the final server command. Installation and
+example preparation are one-time setup steps.
+
+The default local port is **8768**. If startup reports `Errno 10048` or
+"address already in use", stop the existing server with **Ctrl+C**, or choose
+another port and update both `PORT` and `SCRNA_ORIGIN` to match. See
+[local port configuration](APP.md#local-port-configuration) for commands.
 
 ## Complete data pipeline
 

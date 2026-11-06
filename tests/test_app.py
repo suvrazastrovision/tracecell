@@ -170,9 +170,16 @@ def test_inspection_failure_keeps_slot(service,tmp_path):
     assert service.store.get('uploads/'+u['id'])['status']=='failed'
 
 
-def test_http_security_and_submission(service,sample,monkeypatch):
+@pytest.mark.parametrize('port', [None, '8769'])
+def test_http_security_and_submission(service,sample,monkeypatch,port):
     from fastapi.testclient import TestClient
     from pbmc_platform.app.web import create_app
+    monkeypatch.delenv('SCRNA_ORIGIN', raising=False)
+    if port is None:
+        monkeypatch.delenv('PORT', raising=False)
+    else:
+        monkeypatch.setenv('PORT', port)
+    origin = 'http://127.0.0.1:' + (port or '8768')
     monkeypatch.setattr('pbmc_platform.app.web.subprocess.Popen',lambda *a,**k:None)
     app=create_app(service,local=True)
     with TestClient(app) as client:
@@ -180,7 +187,7 @@ def test_http_security_and_submission(service,sample,monkeypatch):
         assert client.get('/').status_code==200
         assert client.get('/api/session').json()['signed_in']
         assert client.post('/api/uploads',json={}).status_code==403
-        headers={'Origin':'http://127.0.0.1:8767','X-CSRF-Token':client.cookies.get('csrf')}
+        headers={'Origin':origin,'X-CSRF-Token':client.cookies.get('csrf')}
         path=sample()
         response=client.post('/api/uploads',json={'filename':path.name,'size':path.stat().st_size,'public_data':True},headers=headers)
         assert response.status_code==200
@@ -454,7 +461,7 @@ def test_history_clear_api_requires_csrf_and_keeps_run_available(service,sample)
     with TestClient(create_app(service,local=True)) as client:
         client.get('/')
         assert client.post('/api/history/clear',json={}).status_code==403
-        headers={'Origin':'http://127.0.0.1:8767','X-CSRF-Token':client.cookies.get('csrf')}
+        headers={'Origin':'http://127.0.0.1:8768','X-CSRF-Token':client.cookies.get('csrf')}
         response=client.post('/api/history/clear',json={},headers=headers)
         assert response.status_code==200 and response.json()['cleared']==1
         saved=client.get('/api/runs/'+run['id']).json()
@@ -485,7 +492,7 @@ def test_example_button_reuses_verified_copy_and_skips_failed_or_deleted(service
         'status':'deleted','expires_at':'2099-01-01T00:00:00+00:00'})
     with TestClient(web.create_app(service,local=True)) as client:
         client.get('/')
-        headers={'Origin':'http://127.0.0.1:8767','X-CSRF-Token':client.cookies.get('csrf')}
+        headers={'Origin':'http://127.0.0.1:8768','X-CSRF-Token':client.cookies.get('csrf')}
         first=client.post('/api/examples/human',json={},headers=headers)
         assert first.status_code==200,first.text
         second=client.post('/api/examples/human',json={},headers=headers)

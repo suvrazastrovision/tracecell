@@ -14,11 +14,13 @@ python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --group app --group dev
 $env:PYTHONPATH = 'src'
 $env:SCRNA_MODE = 'local'
+$env:PORT = '8768'
+$env:SCRNA_ORIGIN = 'http://127.0.0.1:8768'
 .\.venv\Scripts\python.exe -m ops.prepare_app_examples
 .\.venv\Scripts\python.exe -m pbmc_platform.app.web
 ```
 
-Open **http://127.0.0.1:8767**. Keep the terminal running; stop it with Ctrl+C.
+Open **http://127.0.0.1:8768**. Keep the terminal running; stop it with Ctrl+C.
 The local app uses SQLite, private local files and real DuckDB/dbt SQL. It does
 not use GCP or require cloud sign-in. Example preparation downloads public data.
 Local mode is restricted to loopback and is forbidden inside Cloud Run.
@@ -36,6 +38,29 @@ Local mode is restricted to loopback and is forbidden inside Cloud Run.
 The PBMC and mouse example policies are demonstration choices, not scientific
 recommendations. Comparing technical QC policies does not identify an optimal
 biological analysis.
+
+## Local port configuration
+
+The default local port is **8768**. Both the frontend and backend use this port;
+the API explorer is at **http://127.0.0.1:8768/docs**.
+
+If startup reports `Errno 10048` or "address already in use", stop the existing
+server with **Ctrl+C** in its terminal. To use another port instead, set both
+variables before starting the app, for example:
+
+```powershell
+$env:PYTHONPATH = 'src'
+$env:SCRNA_MODE = 'local'
+$env:PORT = '8769'
+$env:SCRNA_ORIGIN = 'http://127.0.0.1:8769'
+.\.venv\Scripts\python.exe -m pbmc_platform.app.web
+```
+
+Open **http://127.0.0.1:8769** for this example. On macOS/Linux, use
+`export PORT=8769` and `export SCRNA_ORIGIN=http://127.0.0.1:8769`.
+When `SCRNA_ORIGIN` is unset, the local origin automatically follows `PORT`.
+If it is set, its scheme, host and port must match the URL used in your browser
+so uploads and other write requests pass the origin check.
 
 ## Supported data and limits
 
@@ -282,12 +307,12 @@ Example buttons reuse an existing matching, checksum-pinned upload rather than c
 
 ## Explore the backend with Swagger
 
-Open **http://127.0.0.1:8767/docs** for the grouped API explorer. Expand **Health and
+Open **http://127.0.0.1:8768/docs** for the grouped API explorer. Expand **Health and
 session ? GET /ready**, choose **Try it out ? Execute**, and inspect the JSON
 response. **GET /api/runs** lists processing status. Parameters, JSON schemas and
 binary file-upload fields are generated from the actual API routes.
 
-Download the OpenAPI specification at **http://127.0.0.1:8767/openapi.json**.
+Download the OpenAPI specification at **http://127.0.0.1:8768/openapi.json**.
 Swagger assets are served locally. The explorer supplies the existing CSRF header
 for same-origin write requests, while all backend validation and access checks
 remain active. POST/PUT/DELETE perform real operations, including processing,

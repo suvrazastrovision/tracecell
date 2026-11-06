@@ -7,7 +7,7 @@ import requests
 
 
 def main():
-    base='http://127.0.0.1:8767'
+    base='http://127.0.0.1:8768'
     client=requests.Session();client.trust_env=False
     response=client.get(base+'/',timeout=30);response.raise_for_status();assert 'TraceCell' in response.text
     headers={'Origin':base,'X-CSRF-Token':client.cookies['csrf']}

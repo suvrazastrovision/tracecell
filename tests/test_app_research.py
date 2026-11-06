@@ -130,7 +130,7 @@ def test_http_paper_size_boundary(verified, monkeypatch):
     monkeypatch.setattr(research, 'save_paper', capture)
     with TestClient(create_app(service, local=True)) as client:
         client.get('/')
-        headers = {'Origin': 'http://127.0.0.1:8767', 'X-CSRF-Token': client.cookies.get('csrf'),
+        headers = {'Origin': 'http://127.0.0.1:8768', 'X-CSRF-Token': client.cookies.get('csrf'),
                    'Content-Type': 'application/pdf'}
         payload = b'x' * MAX_PDF
         accepted = client.post(f'/api/runs/{run}/papers', content=payload, headers=headers)
@@ -182,7 +182,7 @@ def test_openai_adapter_uses_no_storage_and_pinned_context(verified, monkeypatch
 def test_research_http_upload_comparison_and_csrf(verified, pdf):
     service,run,_=verified
     with TestClient(create_app(service,local=True)) as client:
-        client.get('/');headers={'Origin':'http://127.0.0.1:8767','X-CSRF-Token':client.cookies.get('csrf'),'Content-Type':'application/pdf'}
+        client.get('/');headers={'Origin':'http://127.0.0.1:8768','X-CSRF-Token':client.cookies.get('csrf'),'Content-Type':'application/pdf'}
         assert client.post(f'/api/runs/{run}/papers',content=pdf).status_code==403
         response=client.post(f'/api/runs/{run}/papers?filename=methods.pdf',content=pdf,headers=headers)
         assert response.status_code==200,response.text
