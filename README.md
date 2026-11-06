@@ -1,4 +1,4 @@
-# TraceCell — scRNA-seq Knowledge Platform
+## TraceCell: scRNA-seq Knowledge Platform
 
 [![Cross-platform tests](https://github.com/suvrazastrovision/okf_gcp/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/okf_gcp/actions/workflows/ci.yml)
 [![Python 3.11](assets/readme/badge-python.svg)](#quick-start)
