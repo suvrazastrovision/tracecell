@@ -1,5 +1,6 @@
 ## TraceCell: scRNA-seq Knowledge Platform
 
+[![DOI: 10.5281/zenodo.24023343](https://zenodo.org/badge/DOI/10.5281/zenodo.24023343.svg)](https://doi.org/10.5281/zenodo.24023343)
 [![Cross-platform tests](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml)
 [![Python 3.11](assets/readme/badge-python.svg)](#quick-start)
 [![Tested on Windows, Linux and macOS](assets/readme/badge-platforms.svg)](https://github.com/suvrazastrovision/tracecell/actions/workflows/ci.yml)
