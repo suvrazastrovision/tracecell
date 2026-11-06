@@ -99,6 +99,20 @@ The default local port is **8768**. If startup reports `Errno 10048` or
 another port and update both `PORT` and `SCRNA_ORIGIN` to match. See
 [local port configuration](APP.md#local-port-configuration) for commands.
 
+## Technology at a glance
+
+| Component | Technology | Purpose |
+| --- | --- | --- |
+| Frontend | HTML, CSS, JavaScript | Sample upload, QC settings, progress, plots and comparisons. |
+| Backend | Python 3.11, FastAPI, Uvicorn | APIs, validation, processing coordination and result access; Swagger at `/docs`. |
+| Scientific processing | Scanpy, AnnData, NumPy, SciPy, Matplotlib | Read count matrices, calculate QC and generate plots. |
+| Analytics | dbt with DuckDB locally or BigQuery on GCP | Build SQL models and test metadata and QC summaries. |
+| Storage | Local files + SQLite; GCS + Firestore on GCP | Store inputs, results, run history and processing state. |
+| Answering model (optional) | OpenAI `gpt-5-nano` or Ollama `qwen2.5:3b` configurable defaults | Cited questions and draft paper QC rules; requires separate configuration. Verified evidence lookup works without a model. |
+| Cloud execution | Cloud Run Jobs, Workflows, Cloud Scheduler | Run, coordinate and schedule cloud processing. |
+| Infrastructure | Terraform, Docker, Artifact Registry | Define cloud resources and permissions; build and store container images. |
+| Testing | pytest, JavaScript checks, GitHub Actions | Check behavior on Windows, Linux and both Mac architectures. |
+
 ## Complete data pipeline
 
 This is the complete implemented cloud pipeline, including orchestration,
