@@ -21,7 +21,7 @@ platform. **Nextflow** would be a strong option for future workflows requiring
 large parallel sequencing analyses or execution across HPC and multiple clouds;
 it could work alongside Terraform and dbt.
 
-**First release:** this is the initial research version. Further features, improvements and batch scheduler job of unified integrated omics platform will be added in future releases. Stay tuned!
+**First release:** this is the initial research version on this data platform. Further features, workflow upgrade, improvements and batch scheduler job of unified integrated MultiOmics' platform will be added in future releases. Stay tuned!
 
 ## Walkthrough
 
