@@ -255,6 +255,34 @@ def test_cloud_auth_allowlist_and_csrf(service,monkeypatch):
         assert client.get('/api/runs/'+'a'*32).status_code==404
 
 
+@pytest.mark.parametrize('scripts_relative', ['Python/Scripts', '.venv/Scripts', '.venv/bin'])
+def test_dbt_uses_active_python_scripts_directory(tmp_path, monkeypatch, scripts_relative):
+    import os
+    import pbmc_platform.app.worker as worker
+
+    scripts = tmp_path / scripts_relative
+    project = tmp_path / 'private dbt project'
+    # The scripts folder need not be next to python.exe (standard Windows Python).
+    monkeypatch.setattr(worker.sys, 'executable', str(tmp_path / 'Python' / 'python.exe'))
+    monkeypatch.setattr(worker.sysconfig, 'get_path', lambda name: str(scripts) if name == 'scripts' else None)
+    monkeypatch.setattr(worker, 'database', lambda service: tmp_path / 'analytics.duckdb')
+    monkeypatch.setattr(worker, 'dbt_project', lambda *args: project)
+
+    class CommandCaptured(Exception):
+        pass
+
+    def capture(command, **kwargs):
+        assert command == [str(scripts / ('dbt.exe' if os.name == 'nt' else 'dbt')),
+                           'build', '--project-dir', str(project), '--profiles-dir', str(project),
+                           '--target', 'local', '--no-partial-parse']
+        assert not kwargs.get('shell', False)
+        raise CommandCaptured
+
+    monkeypatch.setattr(worker.subprocess, 'run', capture)
+    with pytest.raises(CommandCaptured):
+        worker.dbt_stage(None, {'release_id': 'a' * 64}, tmp_path)
+
+
 def test_dbt_uses_writable_private_template_copy(tmp_path,monkeypatch):
     import shutil
     import pbmc_platform.app.worker as worker

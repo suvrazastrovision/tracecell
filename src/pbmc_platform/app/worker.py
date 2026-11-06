@@ -7,6 +7,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import sysconfig
 import tempfile
 
 import numpy as np
@@ -128,7 +129,7 @@ def dbt_stage(service, record, root):
     command = [sys.executable, '-m', 'dbt.cli.main', 'build', '--project-dir', str(project),
                '--profiles-dir', str(project), '--target', 'local' if local else 'bigquery', '--no-partial-parse']
     # dbt's module is not a CLI entrypoint in every supported installation; use its console script.
-    executable = Path(sys.executable).parent / ('dbt.exe' if os.name == 'nt' else 'dbt')
+    executable = Path(sysconfig.get_path('scripts')) / ('dbt.exe' if os.name == 'nt' else 'dbt')
     command = [str(executable), *command[3:]]
     result = subprocess.run(command, env=env, capture_output=True, text=True, timeout=1100)
     if result.returncode:

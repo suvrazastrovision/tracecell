@@ -8,3 +8,5 @@ src/pbmc_platform/assistant.py text eol=lf
 src/pbmc_platform/question_routing.py text eol=lf
 src/pbmc_platform/evaluate_assistant.py text eol=lf
 evaluations/*.json text eol=lf
+# Vendor checksums cover upstream bytes, including line endings.
+src/pbmc_platform/app/static/swagger/* -text
