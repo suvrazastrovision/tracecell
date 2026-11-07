@@ -307,10 +307,7 @@ Example buttons reuse an existing matching, checksum-pinned upload rather than c
 
 ## Explore the backend with Swagger
 
-Open **http://127.0.0.1:8768/docs** for the grouped API explorer. Expand **Health and
-session ? GET /ready**, choose **Try it out ? Execute**, and inspect the JSON
-response. **GET /api/runs** lists processing status. Parameters, JSON schemas and
-binary file-upload fields are generated from the actual API routes.
+Open **http://127.0.0.1:8768/docs** for the grouped API explorer. Expand **Health and Session**, select **GET /ready**, choose **Try it out**, then **Execute**, and inspect the JSON response. **GET /api/runs** lists processing status. Parameters, JSON schemas and binary file-upload fields are generated from the actual API routes.
 
 Download the OpenAPI specification at **http://127.0.0.1:8768/openapi.json**.
 Swagger assets are served locally. The explorer supplies the existing CSRF header
