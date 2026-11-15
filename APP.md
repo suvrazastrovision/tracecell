@@ -4,6 +4,46 @@ TraceCell adds uploads, configurable quality control, SQL analytics, evidence-ba
 results and policy comparisons to the existing PBMC pipeline. The legacy pipeline
 and its archived assistant remain separate.
 
+[README](README.md) · [Documentation index](DOCUMENTATION.md) · [Operations guide](OPERATIONS.md)
+
+## Contents
+
+- [Scope and limitations](#scope-and-limitations)
+- [Run on your computer](#run-on-your-computer)
+- [Local port configuration](#local-port-configuration)
+- [Supported data and limits](#supported-data-and-limits)
+- [Data flow](#data-flow)
+- [Example data and evidence](#example-data-and-evidence)
+- [GCP deployment and sign-in](#gcp-deployment-and-sign-in)
+- [Failure recovery and deletion](#failure-recovery-and-deletion)
+- [Checks](#checks)
+- [Historical implementation status](#accepted-implementation-status-historical-release-snapshot)
+- [Optional .env configuration](#optional-env-configuration)
+- [Run Evidence questions and paper references](#run-evidence-questions-and-research-paper-references)
+- [Swagger API explorer](#explore-the-backend-with-swagger)
+- [Processing progress and time estimates](#processing-progress-and-time-estimates)
+- [Build the app container](#build-the-app-container)
+
+## Scope and limitations
+
+TraceCell is an initial research release for QC of existing human or mouse
+`.h5ad` count matrices, one sample per file. It does not provide clinical
+interpretation, cell-type inference or multi-sample analysis. Paper comparison
+covers supported QC rules, not reproduction of an entire paper. Check AI answers
+against their cited evidence.
+
+Cloning the repository and running local QC do not use the repository owner's
+GCP account. A cloud deployment uses its project's billing account; a paid
+answering model uses the configured key owner's account. The cloud configuration
+targets the portfolio project; follow [deployment portability](OPERATIONS.md#deployment-portability)
+before deploying your own copy.
+
+Future version-controlled releases are planned to expand features, workflows,
+batch scheduling and integrated multiomics support. Those capabilities are
+outside this release's supported scope. A step-by-step YouTube tutorial is also
+planned; the current [animated walkthrough](README.md#walkthrough) demonstrates
+the app.
+
 ## Run on your computer
 
 Use Python 3.11. In PowerShell, from the repository root:
@@ -223,6 +263,31 @@ monthly spending cap.
 See [the release evidence summary](examples/app-acceptance.json) for exact
 workflow IDs, publication pins, archived report hashes and remaining launch gates.
 
+
+## Optional .env configuration
+
+For the answering model, copy [`.env.example`](.env.example) to `.env` in the
+repository root. These commands preserve an existing `.env`:
+
+```powershell
+# Windows PowerShell
+if (!(Test-Path .env)) { Copy-Item .env.example .env }
+```
+
+```bash
+# macOS / Linux
+[ -f .env ] || cp .env.example .env
+```
+
+The default `SCRNA_LLM_PROVIDER=disabled` needs no key. To enable OpenAI, edit
+`.env` and set the provider to `openai`, the model to `gpt-5-nano`, and
+`OPENAI_API_KEY` to your own key; calls may incur charges. For Ollama, set the
+provider to `ollama` and model to `qwen2.5:3b`, then install and run that model
+locally. See the [model setup guide](APP.md#run-evidence-questions-and-research-paper-references).
+Refresh the browser after editing; terminal variables override `.env` values.
+Only model settings are read from `.env`; keep runtime settings such as `PORT`
+and `SCRNA_ORIGIN` in the terminal commands above. Your `.env` is Git-ignored;
+never commit keys or share it.
 
 ## Run Evidence questions and research-paper references
 

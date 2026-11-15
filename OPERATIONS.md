@@ -2,6 +2,55 @@
 
 For the current TraceCell app and cross-platform quick start, see the [README](README.md). This guide retains the infrastructure, container and archived PBMC assistant instructions. The scheduled four-job PBMC pipeline is separate from the upload app described in [APP.md](APP.md).
 
+[README](README.md) · [Documentation index](DOCUMENTATION.md) · [App guide](APP.md)
+
+## Contents
+
+- [Architecture and tooling](#architecture-and-tooling)
+- [Complete data pipeline](#complete-data-pipeline)
+- [Python dependencies](#python-dependencies)
+- [Tests and CI](#tests-and-ci)
+- [Container builds](#container-builds)
+- [Cloud pipeline management](#how-the-cloud-pipeline-is-managed)
+- [Archived assistant demo](#archived-assistant-demo-powershell)
+- [Run the processing](#run-the-processing)
+- [Documentation assets](#documentation-assets)
+- [Deployment portability](#deployment-portability)
+
+## Architecture and tooling
+
+TraceCell connects sample processing with tested analytics and traceable results.
+Terraform defines cloud infrastructure and access permissions, dbt builds and
+tests SQL analytics, and GCP Workflows coordinates processing and publication.
+The current scope is analysis of existing `.h5ad` count matrices, with a local
+runtime and a GCP deployment.
+
+Nextflow is a possible future complement for large parallel sequencing analyses
+or execution across HPC and multiple clouds. It is not part of the implemented
+pipeline described here.
+
+### Technology at a glance
+
+| Component | Technology | Purpose |
+| --- | --- | --- |
+| Frontend | HTML, CSS, JavaScript | Sample upload, QC settings, progress, plots and comparisons. |
+| Backend | Python 3.11, FastAPI, Uvicorn | APIs, validation, processing coordination and result access; Swagger at `/docs`. |
+| Scientific processing | Scanpy, AnnData, NumPy, SciPy, Matplotlib | Read count matrices, calculate QC and generate plots. |
+| Analytics | dbt with DuckDB locally or BigQuery on GCP | Build SQL models and test metadata and QC summaries. |
+| Storage | Local files + SQLite; GCS + Firestore on GCP | Store inputs, results, run history and processing state. |
+| Answering model (optional) | OpenAI `gpt-5-nano` or Ollama `qwen2.5:3b` configurable defaults | Cited questions and draft paper QC rules; requires separate configuration. Verified evidence lookup works without a model. |
+| Cloud execution | Cloud Run Jobs, Workflows, Cloud Scheduler | Run, coordinate and schedule cloud processing. |
+| Infrastructure | Terraform, Docker, Artifact Registry | Define cloud resources and permissions; build and store container images. |
+| Testing | pytest, JavaScript checks, GitHub Actions | Check behavior on Windows, Linux and both Mac architectures. |
+
+### App and archived pipeline
+
+The upload app supports per-run QC, policy comparisons, verified evidence lookup
+and optional model-backed questions; see its [data flow](APP.md#data-flow).
+The scheduled PBMC pipeline below has a separate archived assistant that serves
+a pinned publication until rebuilt and redeployed. Its fixed-rule answers do
+not use a language model.
+
 ## Complete data pipeline
 
 Solid arrows show processing and delivery. Dotted arrows show orchestration,
@@ -255,11 +304,17 @@ Inspect the execution in Google Cloud Console → Workflows →
 its own infrastructure, IAM and configuration; the command above is not a fresh
 installation. Infrastructure definitions are in [infra/](infra/).
 
-## Deployment portability
+## Documentation assets
 
-To rebuild the README diagram and static badges after changing the flow, run
+To rebuild the static pipeline illustration and README badges, run
 `.venv/bin/python -m ops.build_pipeline_diagram` (macOS/Linux) or
 `.\.venv\Scripts\python.exe -m ops.build_pipeline_diagram` (Windows).
+
+The generated [SVG](assets/readme/pipeline.svg) and [PNG](assets/readme/pipeline.png)
+illustrate the app's local and GCP data flow. The Mermaid diagram above documents
+the separate scheduled PBMC pipeline and is maintained directly in this guide.
+
+## Deployment portability
 
 The existing Terraform roots, backend buckets, image references and example cloud commands target the portfolio owner’s `pbmc-okf-portfolio` project. They are not a turnkey deployment into a new user’s account. Configure your own project, state backend, storage, images and IAM before deploying. Several targets use private Artifact Registry parent images; local Python startup does not require them.
 
