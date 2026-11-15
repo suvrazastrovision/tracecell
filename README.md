@@ -13,8 +13,8 @@
 
 TraceCell is the **quality-control (QC) demonstration module** of a broader
 full stack multi-omics application designed to harmonise data and support
-**drug target and biomarker discovery**. This repository showcases the
-single-cell RNA-seq QC module. **The full application is shared only upon request.**
+drug target and biomarker discovery. This repository showcases the
+single-cell RNA-seq QC module. The full application is under active development and will be shared only upon official request.
 
 TraceCell turns a **human or mouse single-cell RNA-seq count matrix** (`.h5ad`)
 into quality-control plots, checked SQL analytics and verified Run Evidence.
